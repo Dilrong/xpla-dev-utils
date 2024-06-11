@@ -8,12 +8,34 @@ import React from 'react'
 import { ThemeProvider } from '@/components/feature/common/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'XPLA DEV Utils',
-  description: 'XPLA Dev Utils',
-  openGraph: {},
-  twitter: {},
-  icons: {},
-  alternates: {},
+  title: {
+    default: 'XPLA DEV Utils',
+    template: '%s | XPLA DEV Utils',
+  },
+  description: 'Web of utilities for XPLA blockchain development',
+  openGraph: {
+    title: 'XPLA DEV Utils',
+    description: 'Web of utilities for XPLA blockchain development',
+    url: 'https://xpla-dev-utils.vercel.app',
+    images: ['/images/og.png'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'XPLA DEV Utils',
+    description: 'Web of utilities for XPLA blockchain development',
+    images: ['/images/og.png'],
+    creator: 'XPLA DEV Utils',
+    site: 'https://xpla-dev-utils.vercel.app',
+  },
+  icons: {
+    icon: '/images/icons/apple-icon.png',
+    apple: '/images/icons/apple-icon.png',
+    other: {
+      rel: 'apple-icon-precomposed.png',
+      url: '/images/icons/apple-icon-precomposed.png',
+    },
+  },
 }
 
 export default async function LocaleLayout({
