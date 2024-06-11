@@ -14,8 +14,9 @@ const MainNav = () => {
         <b>XPLA Utils</b>
       </Link>
       <nav className="flex items-center gap-4 text-sm lg:gap-6">
-        {menuConfig.mainNav.map((nav) => (
+        {menuConfig.mainNav.map((nav, index) => (
           <Link
+            key={index}
             href={`${nav.href}`}
             className={cn(
               'transition-colors hover:text-foreground/80',

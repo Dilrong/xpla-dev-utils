@@ -32,7 +32,7 @@ const EpochConvert = () => {
   }
 
   return (
-    <div className="splace-y-2">
+    <div className="space-y-2">
       <p className="py-4">
         The current Unix epoch time is <b>{current}</b>
       </p>
