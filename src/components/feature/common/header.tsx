@@ -4,6 +4,7 @@ import { useState } from 'react'
 import MobileNav from '@/components/feature/common/mobile-nav'
 import MainNav from '@/components/feature/common/main-nav'
 import ModeToggle from '@/components/feature/common/mode-toggle'
+import NetToggle from '@/components/feature/common/net-toggle'
 
 const Headers = () => {
   const [toggle, setToggle] = useState(false)
@@ -19,6 +20,7 @@ const Headers = () => {
         <MobileNav />
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end"></div>
         <ModeToggle />
+        <NetToggle />
       </div>
     </header>
   )
