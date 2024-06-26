@@ -24,3 +24,18 @@ export function bytesToBase64(bytes: Uint8Array): string {
   ).join('')
   return btoa(binString)
 }
+
+/**
+ * 주소를 요약해서 반환한다.
+ * @param address
+ * @param startLength
+ * @param endLength
+ */
+export const summarizeAddress = (
+  address: string,
+  startLength = 6,
+  endLength = 4,
+) => {
+  if (!address) return ''
+  return `${address.slice(0, startLength)}...${address.slice(-endLength)}`
+}

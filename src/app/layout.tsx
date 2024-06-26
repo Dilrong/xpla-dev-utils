@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
+import React from 'react'
 import './globals.css'
 import Header from '@/components/feature/common/header'
 import Footer from '@/components/feature/common/footer'
-import React from 'react'
 import { ThemeProvider } from '@/components/feature/common/theme-provider'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: {
@@ -60,6 +61,7 @@ export default async function LocaleLayout({
             <Header />
             {children}
             <Footer />
+            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
