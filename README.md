@@ -17,12 +17,24 @@ bun dev
 
 ## To-do List
 
+### Main
+- [x] Check LCD Status
+- [x] Check RPC Status
+- [x] Check BlockChain Status
+
 ### Contract
 - [x] contract query
 - [ ] contract execute
-- [ ] contract history
+- [x] contract history
 - [ ] contract favorite
 - [ ] contract env
+
+### Factory
+- [ ] cw-20
+- [ ] cw-721
+- [ ] erc-20
+- [ ] erc-721
+- [ ] erc-1155
 
 ### Convert
 - [x] axpla to xpla
@@ -33,4 +45,4 @@ bun dev
 ### ETC
 - [ ] Internationalization 
 
-> If you have a feature request, please open an issue 😘
+> If you have a feature request, please open an issue. 😘

@@ -1,20 +1,33 @@
 import { create } from 'zustand'
-import { Lcd, Network } from '@/lib/types/config'
+import { Network, getNetworkConfig } from '@/lib/config/block-chain'
 
 type ConfigStore = {
-  net: Network
-  lcd: Lcd
+  network: Network
+  lcd: string
+  rpc: string
   explorer: string
-  setExplorer: (explorer: string) => void
-  setNet: (net: Network, lcd: Lcd) => void
+  blockTime: number
+
+  toggleNetwork: (network: Network) => void
 }
 
 const useConfigStore = create<ConfigStore>((set) => ({
-  net: 'testnet',
-  lcd: Lcd.testnet,
-  explorer: 'https://explorer.xpla.io/testnet/',
-  setNet: (net, lcd) => set(() => ({ net: net, lcd: lcd })),
-  setExplorer: (explorer: string) => set(() => ({ explorer })),
+  network: Network.testnet,
+  lcd: getNetworkConfig(Network.testnet).lcd,
+  rpc: getNetworkConfig(Network.testnet).rpc,
+  explorer: getNetworkConfig(Network.testnet).explorer,
+  blockTime: getNetworkConfig(Network.testnet).blockTime,
+
+  toggleNetwork: (network: Network) => {
+    const config = getNetworkConfig(network)
+    set(() => ({
+      network: network,
+      lcd: config.lcd,
+      rpc: config.rpc,
+      explorer: config.explorer,
+      blockTime: 6000,
+    }))
+  },
 }))
 
 export { useConfigStore }

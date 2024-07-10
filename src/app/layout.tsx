@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import React from 'react'
 import './globals.css'
@@ -7,8 +6,10 @@ import Header from '@/components/feature/common/header'
 import Footer from '@/components/feature/common/footer'
 import { ThemeProvider } from '@/components/feature/common/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://xpla-dev-utils.vercel.app'),
   title: {
     default: 'XPLA DEV Utils',
     template: '%s | XPLA DEV Utils',
@@ -51,19 +52,21 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+        {/*<NextIntlClientProvider messages={messages}>*/}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TooltipProvider>
             <Header />
             {children}
             <Footer />
             <Toaster />
-          </ThemeProvider>
-        </NextIntlClientProvider>
+          </TooltipProvider>
+        </ThemeProvider>
+        {/*</NextIntlClientProvider>*/}
       </body>
     </html>
   )
