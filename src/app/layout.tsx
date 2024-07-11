@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { getMessages } from 'next-intl/server'
 import React from 'react'
 import './globals.css'
 import Header from '@/components/feature/common/header'
@@ -7,6 +6,7 @@ import Footer from '@/components/feature/common/footer'
 import { ThemeProvider } from '@/components/feature/common/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import WalletInitializer from '@/components/feature/common/wallet-initializer'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://xpla-dev-utils.vercel.app'),
@@ -47,8 +47,6 @@ export default async function LocaleLayout({
   children: React.ReactNode
   params: { locale: string }
 }) {
-  const messages = await getMessages()
-
   return (
     <html lang={locale}>
       <body>
@@ -59,12 +57,14 @@ export default async function LocaleLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>
-            <Header />
-            {children}
-            <Footer />
-            <Toaster />
-          </TooltipProvider>
+          <WalletInitializer>
+            <TooltipProvider>
+              <Header />
+              {children}
+              <Footer />
+              <Toaster />
+            </TooltipProvider>
+          </WalletInitializer>
         </ThemeProvider>
         {/*</NextIntlClientProvider>*/}
       </body>

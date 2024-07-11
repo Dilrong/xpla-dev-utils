@@ -1,6 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import XplaConvert from '@/components/feature/converts/xpla-convert'
-import EpochConvert from '@/components/feature/converts/epoch-convert'
+import MintCw20 from '@/components/feature/mint-token/mint-cw20'
 
 const Page = () => {
   return (
@@ -13,17 +12,15 @@ const Page = () => {
           <p className="text-lg text-muted-foreground">Mint Token in XPLA.</p>
         </div>
         <div className="space-y-2 pt-8">
-          <Tabs defaultValue="axpla" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue="cw20" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="cw20">CW-20</TabsTrigger>
               <TabsTrigger value="erc20">ERC-20</TabsTrigger>
             </TabsList>
             <TabsContent value="cw20">
-              <XplaConvert />
+              <MintCw20 />
             </TabsContent>
-            <TabsContent value="erc20">
-              <EpochConvert />
-            </TabsContent>
+            <TabsContent value="erc20"></TabsContent>
           </Tabs>
         </div>
       </section>

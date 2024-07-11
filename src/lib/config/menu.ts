@@ -9,6 +9,6 @@ export const menuConfig: MenuConfig = {
     { title: 'Contract', href: '/contracts' },
     { title: 'Convert', href: '/converts' },
     // { title: 'NFT', href: '/mint-nft' },
-    // { title: 'token', href: '/mint-token' },
+    { title: 'Token', href: '/mint-token' },
   ],
 }

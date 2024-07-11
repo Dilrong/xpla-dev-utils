@@ -13,8 +13,8 @@ const Page = () => {
           <p className="text-lg text-muted-foreground">Mint NFT in XPLA.</p>
         </div>
         <div className="space-y-2 pt-8">
-          <Tabs defaultValue="axpla" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue="cw721" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="cw721">CW-721</TabsTrigger>
               <TabsTrigger value="erc721">ERC-721</TabsTrigger>
             </TabsList>

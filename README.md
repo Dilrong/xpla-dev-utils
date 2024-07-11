@@ -7,12 +7,6 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 ## To-do List
@@ -30,7 +24,7 @@ bun dev
 - [ ] contract env
 
 ### Factory
-- [ ] cw-20
+- [x] cw-20
 - [ ] cw-721
 - [ ] erc-20
 - [ ] erc-721

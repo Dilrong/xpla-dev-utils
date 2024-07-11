@@ -33,8 +33,8 @@ export function bytesToBase64(bytes: Uint8Array): string {
  */
 export const summarizeAddress = (
   address: string,
-  startLength = 6,
-  endLength = 4,
+  startLength = 5,
+  endLength = 6,
 ) => {
   if (!address) return ''
   return `${address.slice(0, startLength)}...${address.slice(-endLength)}`

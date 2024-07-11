@@ -48,6 +48,17 @@ const Footer = () => {
             Current {height.toLocaleString()} Blocks
           </a>
         </p>
+        <p className="text-balance text-sm leading-loose text-muted-foreground md:text-left">
+          If you have an issue?{' '}
+          <a
+            href="https://github.com/Dilrong/xpla-dev-utils/issues"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center font-medium hover:font-bold"
+          >
+            Visit GitHub
+          </a>
+        </p>
       </div>
     </footer>
   )
