@@ -1,3 +1,5 @@
+import { AccAddress } from '@xpla/xpla.js'
+
 export interface Cw20InstantiateMsg {
   name: string
   symbol: string
@@ -6,4 +8,9 @@ export interface Cw20InstantiateMsg {
     address: string
     amount: string
   }[]
+  mint: {
+    minter: AccAddress
+    gap: string
+    marketing: AccAddress
+  }
 }

@@ -100,6 +100,11 @@ const MintCw20 = () => {
           amount: '10000000000000',
         },
       ],
+      mint: {
+        minter: minter,
+        gap: '10000000000000',
+        marketing: minter,
+      },
     }
 
     return makeMsgCw20Instantiate(executeMsg, cw20CodeId, name, minter)
