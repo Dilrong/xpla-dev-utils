@@ -36,7 +36,7 @@ const EpochConvert = () => {
       <p className="py-4">
         The current Unix epoch time is <b>{current}</b>
       </p>
-      <div className="grid w-full max-w-sm items-center gap-1.5 space-y-2 py-4">
+      <div className="grid w-full items-center gap-1.5 space-y-2 py-4">
         <Label htmlFor="epoch">Epoch</Label>
         <Input
           type="number"

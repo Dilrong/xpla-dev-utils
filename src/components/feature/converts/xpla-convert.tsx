@@ -28,7 +28,7 @@ const XplaConvert = () => {
 
   return (
     <>
-      <div className="grid w-full max-w-sm items-center gap-1.5 space-y-2 py-4">
+      <div className="grid w-full items-center gap-1.5 space-y-2 py-4">
         <Label htmlFor="axpla">aXPLA</Label>
         <Input
           type="number"
@@ -38,7 +38,7 @@ const XplaConvert = () => {
           value={axpla}
         />
       </div>
-      <div className="grid w-full max-w-sm items-center gap-1.5 space-y-2 py-4">
+      <div className="grid w-full items-center gap-1.5 space-y-2 py-4">
         <Label htmlFor="xpla">XPLA</Label>
         <Input
           type="number"

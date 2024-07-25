@@ -38,7 +38,7 @@ const Base64Convert = () => {
 
   return (
     <div className="space-y-4">
-      <div className="grid w-full max-w-sm items-center gap-1.5 space-y-2 py-4">
+      <div className="grid w-full items-center gap-1.5 space-y-2 py-4">
         <Label htmlFor="text">Text</Label>
         <Textarea
           id="text"
@@ -49,7 +49,7 @@ const Base64Convert = () => {
           value={bytes}
         />
       </div>
-      <div className="grid w-full max-w-sm items-center gap-1.5 space-y-2 py-4">
+      <div className="grid w-full items-center gap-1.5 space-y-2 py-4">
         <Label htmlFor="base64">Base64</Label>
         {error && <p className="text-sm text-rose-600">{error}</p>}
         <Textarea
