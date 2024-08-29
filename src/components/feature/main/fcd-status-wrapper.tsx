@@ -6,6 +6,7 @@ import StatusBar from './status-bar'
 import { useConfigStore } from '@/lib/store/config-store'
 import { NodeStatusInterface } from '@/lib/types/node-status.interface'
 import StatusCard from '@/components/feature/main/status-card'
+import dayjs from 'dayjs'
 import { formatWithCommas } from '@/lib/utils'
 
 interface Props {
@@ -13,7 +14,7 @@ interface Props {
   url: string
 }
 
-export default function RpcStatusWrapper({ title, url }: Props) {
+export default function FcdStatusWrapper({ title, url }: Props) {
   const { blockTime } = useConfigStore()
   const [block, setBlock] = useState(0)
   const [timer, setTimer] = useState(0)
@@ -28,20 +29,14 @@ export default function RpcStatusWrapper({ title, url }: Props) {
     setTimer(blockTime)
     const startTime = Date.now()
     try {
-      const res = await axios.post(url, {
-        jsonrpc: '2.0',
-        method: 'eth_getBlockByNumber',
-        params: ['latest', false],
-        id: 1,
-      })
+      const res = await axios.get(`${url}txs/gas_prices`)
       const endTime = Date.now()
       const responseTime = endTime - startTime
-      const blockHeight = parseInt(res.data.result.number, 16)
       setHistory((prev) => {
         const newHistory = [
           ...prev,
           {
-            height: blockHeight,
+            height: dayjs(endTime).unix(),
             success: true,
             timestamp: endTime,
             responseTime: responseTime,
@@ -49,7 +44,7 @@ export default function RpcStatusWrapper({ title, url }: Props) {
         ]
         return newHistory.slice(-90)
       })
-      setBlock(blockHeight)
+      setBlock(res.data.axpla)
     } catch (error) {
       const endTime = Date.now()
       const responseTime = endTime - startTime
@@ -81,7 +76,7 @@ export default function RpcStatusWrapper({ title, url }: Props) {
       footer={
         <div className="flex w-full justify-between">
           <p className="text-sm text-muted-foreground">
-            {formatWithCommas(block)} Blocks
+            {formatWithCommas(block)} axpla
           </p>
           <p className="text-sm text-muted-foreground">
             {new Date().toLocaleTimeString()}

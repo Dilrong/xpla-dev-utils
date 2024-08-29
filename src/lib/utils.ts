@@ -31,11 +31,34 @@ export function bytesToBase64(bytes: Uint8Array): string {
  * @param startLength
  * @param endLength
  */
-export const summarizeAddress = (
+export function summarizeAddress(
   address: string,
   startLength = 5,
   endLength = 6,
-) => {
+): string {
   if (!address) return ''
   return `${address.slice(0, startLength)}...${address.slice(-endLength)}`
+}
+
+/**
+ * 현지화된 숫자 데이터를 반환한다.
+ * @param value 
+ * @returns 
+ */
+export function formatWithCommas(value: number | string): string {
+  let convertValue: number;
+
+  if (typeof (value) === 'string') {
+    convertValue = parseFloat(value);
+
+    if (isNaN(convertValue)) {
+      throw new Error('Input value isNaN')
+    }
+  } else if (typeof (value) === 'number') {
+    convertValue = value;
+  } else {
+    throw new Error('Invalid input value type')
+  }
+
+  return convertValue.toLocaleString();
 }

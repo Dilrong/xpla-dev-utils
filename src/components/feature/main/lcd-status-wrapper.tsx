@@ -6,19 +6,17 @@ import StatusBar from './status-bar'
 import { useConfigStore } from '@/lib/store/config-store'
 import { NodeStatusInterface } from '@/lib/types/node-status.interface'
 import StatusCard from '@/components/feature/main/status-card'
+import { formatWithCommas } from '@/lib/utils'
 
 interface Props {
   title: string
   url: string
 }
 
-const now = new Date()
-
 export default function LcdStatusWrapper({ title, url }: Props) {
   const { blockTime } = useConfigStore()
   const [block, setBlock] = useState(0)
   const [timer, setTimer] = useState(0)
-  const [date, setDate] = useState(now)
   const [history, setHistory] = useState<NodeStatusInterface[]>([])
 
   useEffect(() => {
@@ -78,9 +76,11 @@ export default function LcdStatusWrapper({ title, url }: Props) {
       }
       footer={
         <div className="flex w-full justify-between">
-          <p className="text-sm text-muted-foreground">{block}</p>
           <p className="text-sm text-muted-foreground">
-            {new Date(date).toLocaleTimeString()}
+            {formatWithCommas(block)} Blocks
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {new Date().toLocaleTimeString()}
           </p>
         </div>
       }

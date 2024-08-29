@@ -3,20 +3,22 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useConfigStore } from '@/lib/store/config-store'
+import { formatWithCommas } from '@/lib/utils'
 
 const Footer = () => {
-  const { lcd, explorer } = useConfigStore()
+  const { lcd, explorer, network } = useConfigStore()
 
   const [height, setHeight] = useState(0)
   const [status, setStatus] = useState(false)
 
   useEffect(() => {
+    getLatestBlock()
     const intervalId = setInterval(() => {
       getLatestBlock()
     }, 6000)
 
     return () => clearInterval(intervalId)
-  }, [])
+  }, [lcd])
 
   const getLatestBlock = async () => {
     try {
@@ -45,7 +47,7 @@ const Footer = () => {
             ) : (
               <span className="me-2 flex size-3 animate-pulse rounded-full bg-red-500" />
             )}
-            Current {height.toLocaleString()} Blocks
+            {formatWithCommas(height).toLocaleString()} in {network}
           </a>
         </p>
         <p className="text-balance text-sm leading-loose text-muted-foreground md:text-left">

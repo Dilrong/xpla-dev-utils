@@ -1,6 +1,7 @@
 import LcdStatusWrapper from '@/components/feature/main/lcd-status-wrapper'
 import { getNetworkConfig, Network } from '@/lib/config/block-chain'
 import RpcStatusWrapper from '@/components/feature/main/rpc-status-wrapper'
+import FcdStatusWrapper from '@/components/feature/main/fcd-status-wrapper'
 
 export default function Home() {
   return (
@@ -18,6 +19,10 @@ export default function Home() {
             title="Mainnet RPC"
             url={getNetworkConfig(Network.mainnet).rpc}
           />
+          <FcdStatusWrapper
+            title="Mainnet FCD"
+            url={getNetworkConfig(Network.mainnet).fcd}
+          />
           <LcdStatusWrapper
             title="Testnet LCD"
             url={getNetworkConfig(Network.testnet).lcd}
@@ -25,6 +30,10 @@ export default function Home() {
           <RpcStatusWrapper
             title="Testnet RPC"
             url={getNetworkConfig(Network.testnet).rpc}
+          />
+          <FcdStatusWrapper
+            title="Testnet FCD"
+            url={getNetworkConfig(Network.testnet).fcd}
           />
         </div>
       </section>
