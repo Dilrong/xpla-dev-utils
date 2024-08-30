@@ -7,6 +7,7 @@ type ConfigStore = {
   rpc: string
   explorer: string
   blockTime: number
+  ipfs: string
 
   toggleNetwork: (network: Network) => void
 }
@@ -17,6 +18,7 @@ const useConfigStore = create<ConfigStore>((set) => ({
   rpc: getNetworkConfig(Network.testnet).rpc,
   explorer: getNetworkConfig(Network.testnet).explorer,
   blockTime: getNetworkConfig(Network.testnet).blockTime,
+  ipfs: getNetworkConfig(Network.testnet).ipfs,
 
   toggleNetwork: (network: Network) => {
     const config = getNetworkConfig(network)
@@ -26,6 +28,7 @@ const useConfigStore = create<ConfigStore>((set) => ({
       rpc: config.rpc,
       explorer: config.explorer,
       blockTime: 6000,
+      ipfs: config.ipfs,
     }))
   },
 }))

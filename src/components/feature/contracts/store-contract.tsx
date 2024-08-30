@@ -8,25 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useEffect, useState } from 'react'
 import { summarizeAddress } from '@/lib/utils'
+import { useContractStore } from '@/lib/store/contract-store'
 
 const StoreContract = () => {
-  const [historyList, setHistoryList] = useState([])
+  const { historyList, favoriteList } = useContractStore()
   const { toast } = useToast()
-
-  useEffect(() => {
-    setHistoryList(getAddressesFromLocalStorage())
-  }, [])
-
-  const getAddressesFromLocalStorage = () => {
-    if (typeof window !== 'undefined') {
-      return JSON.parse(
-        localStorage.getItem('contract-address-history') || '[]',
-      )
-    }
-    return []
-  }
 
   const copyClipboard = (text: string) => {
     try {
@@ -49,6 +36,18 @@ const StoreContract = () => {
         <DropdownMenuLabel>Contract Address</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {historyList.map((data, index) => (
+          <DropdownMenuItem
+            key={index}
+            onClick={() => {
+              copyClipboard(data)
+            }}
+          >
+            {summarizeAddress(data)}
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuLabel>FavoriteList</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {favoriteList.map((data, index) => (
           <DropdownMenuItem
             key={index}
             onClick={() => {

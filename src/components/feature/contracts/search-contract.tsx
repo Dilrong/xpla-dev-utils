@@ -1,15 +1,23 @@
 'use client'
 
-import { ChangeEvent, useState } from 'react'
+import StoreContract from '@/components/feature/contracts/store-contract'
 import { Input } from '@/components/ui/input'
-import axios from 'axios'
+import { useToast } from '@/components/ui/use-toast'
 import { useConfigStore } from '@/lib/store/config-store'
 import { useContractStore } from '@/lib/store/contract-store'
-import StoreContract from '@/components/feature/contracts/store-contract'
+import axios from 'axios'
+import { ChangeEvent, useState } from 'react'
 
 const SearchContract = () => {
   const { lcd } = useConfigStore()
-  const { setAddress } = useContractStore()
+  const { toast } = useToast()
+  const {
+    historyList,
+    setHistoryList,
+    favoriteList,
+    setFavoriteList,
+    setAddress,
+  } = useContractStore()
   const [error, setError] = useState(false)
 
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -20,28 +28,42 @@ const SearchContract = () => {
       setAddress(res.data.address)
       setError(false)
 
-      if (typeof window !== 'undefined') {
-        const newAddress = res.data.address
-        const storedAddresses = JSON.parse(
-          localStorage.getItem('contract-address-history') || '[]',
-        )
+      // Contract store HistoryList
+      const newAddress = res.data.address
+      const storedAddresses = historyList
 
-        if (!storedAddresses.includes(newAddress)) {
-          storedAddresses.push(newAddress)
+      if (!storedAddresses.includes(newAddress)) {
+        storedAddresses.push(newAddress)
 
-          if (storedAddresses.length > 5) {
-            storedAddresses.shift()
-          }
-
-          localStorage.setItem(
-            'contract-address-history',
-            JSON.stringify(storedAddresses),
-          )
+        if (storedAddresses.length > 5) {
+          storedAddresses.shift()
         }
+
+        setHistoryList(JSON.stringify(storedAddresses))
       }
     } catch (err) {
       console.error(err)
       setError(true)
+    }
+  }
+
+  const onClickFavorite = async (event: ChangeEvent<HTMLInputElement>) => {
+    // TODO: input에 있는 값 가져와야한다.
+    const { value } = event.target
+
+    const newAddress = value
+    const storedAddresses = favoriteList
+
+    if (storedAddresses.includes(newAddress)) {
+      storedAddresses.push(newAddress)
+
+      if (storedAddresses.length > 10) {
+        toast({
+          title: 'favoriteList cannot exceed 10.',
+        })
+      }
+
+      setFavoriteList(JSON.stringify(storedAddresses))
     }
   }
 

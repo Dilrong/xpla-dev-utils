@@ -9,6 +9,7 @@ type NetworkConfig = {
   fcd: string
   explorer: string
   blockTime: number
+  ipfs: string
 }
 
 const networkConfigs: Record<Network, NetworkConfig> = {
@@ -18,6 +19,7 @@ const networkConfigs: Record<Network, NetworkConfig> = {
     fcd: 'https://dimension-fcd.xpla.dev/v1/',
     explorer: 'https://explorer.xpla.io/mainnet/',
     blockTime: 6000,
+    ipfs: 'https://ipfs.cyou/ipfs/',
   },
   [Network.testnet]: {
     lcd: 'https://cube-lcd.xpla.dev/',
@@ -25,6 +27,7 @@ const networkConfigs: Record<Network, NetworkConfig> = {
     fcd: 'https://cube-fcd.xpla.dev/v1/',
     explorer: 'https://explorer.xpla.io/testnet/',
     blockTime: 6000,
+    ipfs: 'https://ipfs.cyou/ipfs/',
   },
 }
 

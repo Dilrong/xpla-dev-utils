@@ -12,7 +12,9 @@ import { bytesToBase64 } from '@/lib/utils'
 const QueryContract = () => {
   const { lcd } = useConfigStore()
   const { address } = useContractStore()
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState(
+    bytesToBase64(new TextEncoder().encode('{"":{}}')),
+  )
   const [result, setResult] = useState({})
   const [error, setError] = useState('')
 
