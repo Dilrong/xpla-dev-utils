@@ -1,4 +1,5 @@
 import createNextIntlPlugin from 'next-intl/plugin'
+// import withBundleAnalyzer from '@next/bundle-analyzer'
 
 const withNextIntl = createNextIntlPlugin()
 
@@ -17,5 +18,11 @@ const nextConfig = {
     ],
   },
 }
+
+// Checking Bundle Size
+// const withBundleAnalyzerConfig = withBundleAnalyzer({
+//   enabled: 'true',
+//   openAnalyzer: 'true',
+// })
 
 export default withNextIntl(nextConfig)

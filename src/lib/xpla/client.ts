@@ -4,33 +4,12 @@ class Client {
   private lcd: LCDClient | null = null
 
   constructor() {
-    this.initLcd()
-  }
-
-  private async initLcd() {
-    try {
-      await this.setLcd()
-    } catch (error) {
-      console.error('Failed to initialize LCDClient:', error)
-    }
-  }
-
-  async setRpc() {
-    // TODO: EVM RPC
-  }
-
-  async setLcd(): Promise<void> {
-    const gasPrices = await this.getGasPrices()
-    const gasPricesCoins = new Coins(gasPrices)
-
-    const lcd = new LCDClient({
+    this.lcd = new LCDClient({
       URL: 'https://cube-lcd.xpla.dev/',
       chainID: 'cube_47-5',
-      gasPrices: gasPricesCoins,
+      gasPrices: { axpla: '850000000000' },
       gasAdjustment: '1.5',
     })
-
-    this.lcd = lcd
   }
 
   async getGasPrices(): Promise<Coins.Input> {
@@ -52,6 +31,38 @@ class Client {
 
   public getRpc() {
     // TODO: EVM RPC
+  }
+
+  public async getContractFromTxHash(txHash: string): Promise<string> {
+    if (!this.lcd) {
+      console.warn('LCDClient is not initialized yet')
+      return ''
+    }
+
+    const txInfo = await this.lcd.tx.txInfo(txHash)
+    if (!txInfo) {
+      console.warn('TxInfo not Found')
+      return ''
+    }
+
+    if (!txInfo.logs) {
+      console.warn('TxInfo logs not Found')
+      return ''
+    }
+
+    for (const log of txInfo.logs) {
+      for (const event of log.events) {
+        if (event.type === 'instantiate') {
+          for (const attribute of event.attributes) {
+            if (attribute.key === '_contract_address') {
+              return attribute.value
+            }
+          }
+        }
+      }
+    }
+
+    return ''
   }
 }
 

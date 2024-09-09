@@ -1,6 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import XplaConvert from '@/components/feature/converts/xpla-convert'
-import EpochConvert from '@/components/feature/converts/epoch-convert'
+import MintCw721 from '@/components/feature/mint-nft/mint-cw721'
 
 const Page = () => {
   return (
@@ -19,11 +18,9 @@ const Page = () => {
               <TabsTrigger value="erc721">ERC-721</TabsTrigger>
             </TabsList>
             <TabsContent value="cw721">
-              <XplaConvert />
+              <MintCw721 />
             </TabsContent>
-            <TabsContent value="erc721">
-              <EpochConvert />
-            </TabsContent>
+            <TabsContent value="erc721"></TabsContent>
           </Tabs>
         </div>
       </section>
