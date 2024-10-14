@@ -6,6 +6,7 @@ import Footer from '@/components/feature/common/footer'
 import { ThemeProvider } from '@/components/feature/common/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { Analytics } from '@vercel/analytics/react'
 import WalletInitializer from '@/components/feature/common/wallet-initializer'
 
 export const metadata: Metadata = {
@@ -67,6 +68,7 @@ export default async function LocaleLayout({
           </WalletInitializer>
         </ThemeProvider>
         {/*</NextIntlClientProvider>*/}
+        <Analytics />
       </body>
     </html>
   )
