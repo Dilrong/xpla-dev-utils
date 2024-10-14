@@ -21,7 +21,9 @@ const QueryContract = () => {
   const handleChange = (event: FormEvent<HTMLTextAreaElement>) => {
     const { value } = event.currentTarget
 
-    const base64Str = bytesToBase64(new TextEncoder().encode(value))
+    const utf8Bytes = new TextEncoder().encode(value)
+    const base64Str = bytesToBase64(utf8Bytes)
+
     setMessage(base64Str)
   }
 
