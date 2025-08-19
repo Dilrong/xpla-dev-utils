@@ -19,7 +19,7 @@ const networkConfigs: Record<Network, NetworkConfig> = {
     fcd: 'https://dimension-fcd.xpla.dev/v1/',
     explorer: 'https://explorer.xpla.io/mainnet/',
     blockTime: 6000,
-    ipfs: 'https://ipfs.cyou/ipfs/',
+    ipfs: 'https://gateway.pinata.cloud/ipfs/',
   },
   [Network.testnet]: {
     lcd: 'https://cube-lcd.xpla.dev/',
@@ -27,7 +27,7 @@ const networkConfigs: Record<Network, NetworkConfig> = {
     fcd: 'https://cube-fcd.xpla.dev/v1/',
     explorer: 'https://explorer.xpla.io/testnet/',
     blockTime: 6000,
-    ipfs: 'https://ipfs.cyou/ipfs/',
+    ipfs: 'https://gateway.pinata.cloud/ipfs/',
   },
 }
 

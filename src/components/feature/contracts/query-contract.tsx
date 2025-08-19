@@ -20,8 +20,9 @@ const QueryContract = () => {
 
   const handleChange = (event: FormEvent<HTMLTextAreaElement>) => {
     const { value } = event.currentTarget
+    const sanitizedValue = value.replace(/"/g, "'")
 
-    const utf8Bytes = new TextEncoder().encode(value)
+    const utf8Bytes = new TextEncoder().encode(sanitizedValue)
     const base64Str = bytesToBase64(utf8Bytes)
 
     setMessage(base64Str)

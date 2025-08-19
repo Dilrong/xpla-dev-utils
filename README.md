@@ -1,4 +1,5 @@
 # XPLA DEV Utils
+
 Web of utilities for XPLA blockchain development
 
 ## Getting Started
@@ -12,11 +13,13 @@ npm run dev
 ## To-do List
 
 ### Main
+
 - [x] Check LCD Status
 - [x] Check RPC Status
 - [x] Check BlockChain Status
 
 ### Contract
+
 - [x] contract query
 - [ ] contract execute
 - [x] contract history
@@ -24,6 +27,7 @@ npm run dev
 - [ ] contract env
 
 ### Factory
+
 - [x] cw-20
 - [ ] cw-721
 - [ ] erc-20
@@ -31,12 +35,14 @@ npm run dev
 - [ ] erc-1155
 
 ### Convert
+
 - [x] axpla to xpla
 - [x] xpla epoch
 - [x] encode base64
 - [x] decode base64
 
 ### ETC
-- [ ] Internationalization 
+
+- [ ] Internationalization
 
 > If you have a feature request, please open an issue. 😘

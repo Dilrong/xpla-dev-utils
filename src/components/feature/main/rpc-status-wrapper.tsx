@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import StatusBar from './status-bar'
 import { useConfigStore } from '@/lib/store/config-store'
@@ -19,12 +19,7 @@ export default function RpcStatusWrapper({ title, url }: Props) {
   const [timer, setTimer] = useState(0)
   const [history, setHistory] = useState<NodeStatusInterface[]>([])
 
-  useEffect(() => {
-    const intervalId = setInterval(getLatestBlock, timer)
-    return () => clearInterval(intervalId)
-  }, [timer])
-
-  const getLatestBlock = async () => {
+  const getLatestBlock = useCallback(async () => {
     setTimer(blockTime)
     const startTime = Date.now()
     try {
@@ -67,7 +62,12 @@ export default function RpcStatusWrapper({ title, url }: Props) {
         return newHistory.slice(-90)
       })
     }
-  }
+  }, [blockTime, url])
+
+  useEffect(() => {
+    const intervalId = setInterval(getLatestBlock, timer)
+    return () => clearInterval(intervalId)
+  }, [timer, getLatestBlock])
 
   return (
     <StatusCard

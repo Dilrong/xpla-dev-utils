@@ -64,6 +64,7 @@ const MintCw20 = () => {
       }
 
       const signTx = await connectedWallet.post(transactionMsg)
+      console.log(signTx)
       const txHash = signTx.result.txhash
 
       toast({

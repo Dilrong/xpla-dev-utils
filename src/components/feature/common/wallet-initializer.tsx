@@ -16,14 +16,14 @@ const WalletInitializer = ({ children }: Props) => {
         setRenderComponent(
           <WalletProvider
             walletConnectChainIds={options.walletConnectChainIds}
-            defaultNetwork={options.defaultNetwork}
+            defaultNetwork={options.naetwork}
           >
             {children}
           </WalletProvider>,
         )
       }
     })
-  }, [])
+  }, [children])
 
   return renderComponent
 }

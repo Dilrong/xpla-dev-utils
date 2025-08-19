@@ -25,8 +25,8 @@ const useContractStore = create(
     }),
     {
       name: 'contract-storage',
-    }
-  )
+    },
+  ),
 )
 
 export { useContractStore }

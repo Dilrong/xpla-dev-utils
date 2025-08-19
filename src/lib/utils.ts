@@ -42,23 +42,23 @@ export function summarizeAddress(
 
 /**
  * 현지화된 숫자 데이터를 반환한다.
- * @param value 
- * @returns 
+ * @param value
+ * @returns
  */
 export function formatWithCommas(value: number | string): string {
-  let convertValue: number;
+  let convertValue: number
 
-  if (typeof (value) === 'string') {
-    convertValue = parseFloat(value);
+  if (typeof value === 'string') {
+    convertValue = parseFloat(value)
 
     if (isNaN(convertValue)) {
       throw new Error('Input value isNaN')
     }
-  } else if (typeof (value) === 'number') {
-    convertValue = value;
+  } else if (typeof value === 'number') {
+    convertValue = value
   } else {
     throw new Error('Invalid input value type')
   }
 
-  return convertValue.toLocaleString();
+  return convertValue.toLocaleString()
 }

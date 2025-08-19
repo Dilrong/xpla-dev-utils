@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { useConfigStore } from '@/lib/store/config-store'
 import { formatWithCommas } from '@/lib/utils'
@@ -11,16 +11,7 @@ const Footer = () => {
   const [height, setHeight] = useState(0)
   const [status, setStatus] = useState(false)
 
-  useEffect(() => {
-    getLatestBlock()
-    const intervalId = setInterval(() => {
-      getLatestBlock()
-    }, 6000)
-
-    return () => clearInterval(intervalId)
-  }, [lcd])
-
-  const getLatestBlock = async () => {
+  const getLatestBlock = useCallback(async () => {
     try {
       const res = await axios.get(
         `${lcd}/cosmos/base/tendermint/v1beta1/blocks/latest`,
@@ -30,7 +21,16 @@ const Footer = () => {
     } catch (err) {
       setStatus(false)
     }
-  }
+  }, [lcd])
+
+  useEffect(() => {
+    getLatestBlock()
+    const intervalId = setInterval(() => {
+      getLatestBlock()
+    }, 6000)
+
+    return () => clearInterval(intervalId)
+  }, [getLatestBlock])
 
   return (
     <footer className="container flex max-w-screen-2xl justify-center py-6">
