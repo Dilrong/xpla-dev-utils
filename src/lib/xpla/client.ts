@@ -45,6 +45,11 @@ class Client {
       return ''
     }
 
+    if ('code' in txInfo) {
+      console.warn('Transaction failed:', txInfo)
+      return ''
+    }
+
     if (!txInfo.logs) {
       console.warn('TxInfo logs not Found')
       return ''
