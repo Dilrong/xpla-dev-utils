@@ -46,3 +46,15 @@ export function makeMsgCw721Mint(
 
   return new MsgExecuteContract(sender, contractAddress, executeMsg, undefined)
 }
+
+export function makeMsgCw721Burn(
+  contractAddress: string,
+  tokenId: string,
+  sender: string,
+): MsgExecuteContract {
+  return new MsgExecuteContract(sender, contractAddress, {
+    burn: {
+      token_id: tokenId,
+    },
+  })
+}

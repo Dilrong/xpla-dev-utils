@@ -6,9 +6,11 @@ interface MenuConfig {
 
 export const menuConfig: MenuConfig = {
   mainNav: [
-    { title: 'Contract', href: '/contracts' },
-    { title: 'Convert', href: '/converts' },
-    { title: 'NFT', href: '/mint-nft' },
-    { title: 'Token', href: '/mint-token' },
+    { title: 'Status', href: '/' },
+    { title: 'Contracts', href: '/contracts' },
+    { title: 'Mint Token', href: '/mint-token' },
+    { title: 'Mint NFT', href: '/mint-nft' },
+    { title: 'Burn', href: '/burn' },
+    { title: 'Converts', href: '/converts' },
   ],
 }

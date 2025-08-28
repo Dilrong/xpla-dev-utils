@@ -23,32 +23,34 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
+import { ToastAction } from '@/components/ui/toast'
 import { useConfigStore } from '@/lib/store/config-store'
 import { useConnectedWallet } from '@xpla/wallet-provider'
-import { cw20CodeId, makeMsgCw20Instantiate } from '@/lib/xpla/contract/cw20'
-import { Loader2, Coins } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { makeMsgCw20Burn } from '@/lib/xpla/contract/cw20'
 import axios from 'axios'
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
+  contractAddress: z.string().min(1, {
+    message: 'Contract address is required.',
   }),
-  symbol: z.string().min(2, {
-    message: 'Symbol must be at least 2 characters.',
+  amount: z.string().min(1, {
+    message: 'Amount to burn is required.',
   }),
 })
 
-const MintCw20 = () => {
+export function BurnCw20() {
   const { toast } = useToast()
   const { explorer, lcd } = useConfigStore()
+  const router = useRouter()
   const connectedWallet = useConnectedWallet()
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      symbol: '',
+      contractAddress: '',
+      amount: '',
     },
   })
 
@@ -56,7 +58,7 @@ const MintCw20 = () => {
     if (!connectedWallet) {
       toast({
         title: 'Wallet not connected',
-        description: 'Please connect your wallet to create tokens.',
+        description: 'Please connect your wallet to burn tokens.',
         variant: 'destructive',
       })
       return
@@ -65,27 +67,9 @@ const MintCw20 = () => {
     try {
       setIsLoading(true)
 
-      const executeMsg = {
-        name: values.name,
-        symbol: values.symbol,
-        decimals: 6,
-        initial_balances: [
-          {
-            address: connectedWallet.walletAddress,
-            amount: '10000000000000',
-          },
-        ],
-        mint: {
-          minter: connectedWallet.walletAddress,
-          gap: '10000000000000',
-          marketing: connectedWallet.walletAddress,
-        },
-      }
-
-      const instantiateMsg = makeMsgCw20Instantiate(
-        executeMsg,
-        cw20CodeId,
-        values.name,
+      const burnMsg = makeMsgCw20Burn(
+        values.contractAddress,
+        values.amount,
         connectedWallet.walletAddress,
       )
 
@@ -96,7 +80,7 @@ const MintCw20 = () => {
       })
 
       const signTx = await connectedWallet.post({
-        msgs: [instantiateMsg as any],
+        msgs: [burnMsg as any],
       })
 
       const txHash = signTx.result.txhash
@@ -137,8 +121,8 @@ const MintCw20 = () => {
 
       if (txConfirmed) {
         toast({
-          title: 'Token created successfully! 🎉',
-          description: 'Your CW20 token has been deployed to the blockchain.',
+          title: 'Tokens burned successfully! 🔥',
+          description: `${values.amount} tokens have been burned from your wallet.`,
           action: (
             <Button
               variant="outline"
@@ -176,17 +160,17 @@ const MintCw20 = () => {
       // Reset form
       form.reset()
     } catch (err) {
-      console.error('Mint error:', err)
+      console.error('Burn error:', err)
 
-      let errorMessage = 'Failed to create the token.'
+      let errorMessage = 'Failed to burn the tokens.'
 
       if (err instanceof Error) {
         if (err.message.includes('insufficient funds')) {
-          errorMessage = 'Insufficient funds to create the token.'
+          errorMessage = 'Insufficient token balance to burn.'
         } else if (err.message.includes('unauthorized')) {
-          errorMessage = 'Unauthorized to create tokens.'
+          errorMessage = 'Unauthorized to burn these tokens.'
         } else if (err.message.includes('invalid')) {
-          errorMessage = 'Invalid token parameters.'
+          errorMessage = 'Invalid burn parameters.'
         } else if (err.message.includes('user rejected')) {
           errorMessage = 'Transaction was rejected by user.'
         } else if (err.message.includes('network')) {
@@ -195,7 +179,7 @@ const MintCw20 = () => {
       }
 
       toast({
-        title: 'Token creation failed',
+        title: 'Token burn failed',
         description: errorMessage,
         variant: 'destructive',
       })
@@ -207,12 +191,10 @@ const MintCw20 = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Coins className="size-5" />
-          Create CW-20 Token
-        </CardTitle>
+        <CardTitle>CW20 Token Burn</CardTitle>
         <CardDescription>
-          Deploy a new CW-20 token contract on XPLA blockchain.
+          Burn CW20 tokens to reduce supply. Burned tokens are permanently
+          removed.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -220,13 +202,13 @@ const MintCw20 = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="name"
+              name="contractAddress"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Token Name</FormLabel>
+                  <FormLabel>Contract Address</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="My Token"
+                      placeholder="xpla1..."
                       {...field}
                       disabled={isLoading}
                     />
@@ -238,12 +220,16 @@ const MintCw20 = () => {
 
             <FormField
               control={form.control}
-              name="symbol"
+              name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Token Symbol</FormLabel>
+                  <FormLabel>Amount to Burn</FormLabel>
                   <FormControl>
-                    <Input placeholder="MTK" {...field} disabled={isLoading} />
+                    <Input
+                      placeholder="1000000"
+                      {...field}
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -251,14 +237,7 @@ const MintCw20 = () => {
             />
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Creating Token...
-                </>
-              ) : (
-                'Create CW-20 Token'
-              )}
+              {isLoading ? 'Burning...' : 'Burn Tokens'}
             </Button>
           </form>
         </Form>
@@ -266,5 +245,3 @@ const MintCw20 = () => {
     </Card>
   )
 }
-
-export default MintCw20

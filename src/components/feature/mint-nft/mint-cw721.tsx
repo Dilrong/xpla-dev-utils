@@ -1,5 +1,11 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useState } from 'react'
+import axios from 'axios'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -10,190 +16,245 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { ToastAction } from '@/components/ui/toast'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import { useConfigStore } from '@/lib/store/config-store'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useConnectedWallet } from '@xpla/wallet-provider'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import instantiateCw721 from './helpers/instantiate-cw721'
-import mintCw721 from './helpers/mint-cw721'
+import { makeMsgCw721Instantiate, cw721CodeId } from '@/lib/xpla/contract/cw721'
+import { Cw721InstantiateMsg } from '@/lib/xpla/interface/cw721.interface'
+import { Loader2, Image as ImageIcon } from 'lucide-react'
 
 const formSchema = z.object({
   name: z.string().min(2, {
-    message: 'name must be at least 2 characters.',
+    message: 'Name must be at least 2 characters.',
   }),
   symbol: z.string().min(2, {
-    message: 'name must be at least 2 characters.',
+    message: 'Symbol must be at least 2 characters.',
   }),
-  description: z.string().min(2, {
-    message: 'name must be at least 2 characters.',
-  }),
-  tokenId: z.string().min(1, {
-    message: 'name must be at least 1 characters.',
-  }),
-  tokenUri: z.string().min(2, {
-    message: 'name must be at least 2 characters.',
-  }),
-  image: z.string(),
 })
 
-const MintCw721 = () => {
+export function MintCw721() {
   const { toast } = useToast()
-  const { explorer } = useConfigStore()
-
-  const router = useRouter()
+  const { explorer, lcd } = useConfigStore()
   const connectedWallet = useConnectedWallet()
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
+      symbol: '',
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!connectedWallet) {
+      toast({
+        title: 'Wallet not connected',
+        description: 'Please connect your wallet to create NFT contracts.',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
-      if (!connectedWallet) {
+      setIsLoading(true)
+
+      // CW721 컨트랙트 인스턴스화
+      const executeMsg: Cw721InstantiateMsg = {
+        name: values.name,
+        symbol: values.symbol,
+        minter: connectedWallet.walletAddress,
+        owner: connectedWallet.walletAddress,
+      }
+
+      const instantiateMsg = makeMsgCw721Instantiate(
+        executeMsg,
+        cw721CodeId,
+        values.name,
+        connectedWallet.walletAddress,
+      )
+
+      // 트랜잭션 제출
+      toast({
+        title: 'Transaction submitted',
+        description: 'Please wait while your transaction is being processed...',
+      })
+
+      const signTx = await connectedWallet.post({
+        msgs: [instantiateMsg as any],
+      })
+      const txHash = signTx.result.txhash
+
+      // 트랜잭션 처리 대기
+      toast({
+        title: 'Transaction submitted successfully',
+        description: 'Waiting for transaction confirmation...',
+      })
+
+      // 트랜잭션 상태 확인 (최대 30초 대기)
+      let txConfirmed = false
+      let attempts = 0
+      const maxAttempts = 30
+
+      while (!txConfirmed && attempts < maxAttempts) {
+        try {
+          await new Promise((resolve) => setTimeout(resolve, 1000)) // 1초 대기
+
+          const txResponse = await axios.get(
+            `${lcd}/cosmos/tx/v1beta1/txs/${txHash}`,
+          )
+
+          if (
+            txResponse.data.tx_response &&
+            txResponse.data.tx_response.code === 0
+          ) {
+            txConfirmed = true
+            break
+          }
+
+          attempts++
+        } catch (error) {
+          attempts++
+          // 에러가 발생해도 계속 시도
+        }
+      }
+
+      if (txConfirmed) {
         toast({
-          title: 'not connect wallet',
-          description: 'wallet connection is required to mint token',
+          title: `NFT Collection "${values.name}" created successfully! 🎉`,
+          description:
+            'Your CW721 NFT contract has been deployed to the blockchain.',
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const explorerUrl = `${explorer}tx/${txHash}`
+                window.open(explorerUrl, '_blank', 'noopener,noreferrer')
+              }}
+            >
+              View on Explorer
+            </Button>
+          ),
         })
-        return
+      } else {
+        // 타임아웃 시에도 성공으로 처리 (트랜잭션이 제출되었으므로)
+        toast({
+          title: 'Transaction submitted',
+          description:
+            'Transaction was submitted but confirmation is pending. Check explorer for status.',
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const explorerUrl = `${explorer}tx/${txHash}`
+                window.open(explorerUrl, '_blank', 'noopener,noreferrer')
+              }}
+            >
+              Check on Explorer
+            </Button>
+          ),
+        })
       }
 
-      const contractAddress = await instantiateCw721(
-        values.name,
-        values.symbol,
-        connectedWallet,
-        toast,
-      )
-      if (!contractAddress) {
-        console.error('contractAddress is undefined')
-        return
-      }
+      // Reset form
+      form.reset()
+    } catch (err) {
+      console.error('Mint error:', err)
 
-      const txHash = mintCw721(
-        contractAddress,
-        values.name,
-        values.description,
-        values.image,
-        values.tokenId,
-        values.tokenUri,
-        connectedWallet,
-        toast,
-      )
+      let errorMessage = 'Failed to create the NFT contract.'
+
+      if (err instanceof Error) {
+        if (err.message.includes('insufficient funds')) {
+          errorMessage = 'Insufficient funds to create the NFT contract.'
+        } else if (err.message.includes('unauthorized')) {
+          errorMessage = 'Unauthorized to create NFT contracts.'
+        } else if (err.message.includes('invalid')) {
+          errorMessage = 'Invalid NFT contract parameters.'
+        } else if (err.message.includes('user rejected')) {
+          errorMessage = 'Transaction was rejected by user.'
+        } else if (err.message.includes('network')) {
+          errorMessage = 'Network error. Please check your connection.'
+        }
+      }
 
       toast({
-        title: `Minted ${values.name}`,
-        description: `Make it useful`,
-        action: (
-          <ToastAction
-            onClick={() => {
-              router.push(`${explorer}tx/${txHash}`)
-            }}
-            altText="Check"
-          >
-            Check
-          </ToastAction>
-        ),
+        title: 'NFT contract creation failed',
+        description: errorMessage,
+        variant: 'destructive',
       })
-    } catch (err) {
-      console.error(err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="symbol"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Symbol</FormLabel>
-                <FormControl>
-                  <Input placeholder="symbol" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Input placeholder="description" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="tokenId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>TokenId</FormLabel>
-                <FormControl>
-                  <Input placeholder="tokenId" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="tokenUri"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>TokenUri</FormLabel>
-                <FormControl>
-                  <Input placeholder="tokenUri" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <Input placeholder="image" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="w-full" type="submit">
-            Mint NFT
-          </Button>
-        </form>
-      </Form>
-    </>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <ImageIcon className="size-5" />
+          Create CW-721 NFT Contract
+        </CardTitle>
+        <CardDescription>
+          Deploy a new CW-721 NFT contract on XPLA blockchain.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Collection Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="My NFT Collection"
+                      {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="symbol"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Collection Symbol</FormLabel>
+                  <FormControl>
+                    <Input placeholder="MNFT" {...field} disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Creating NFT Contract...
+                </>
+              ) : (
+                'Create CW-721 NFT Contract'
+              )}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }
-
-export default MintCw721

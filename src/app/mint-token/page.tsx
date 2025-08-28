@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import MintCw20 from '@/components/feature/mint-token/mint-cw20'
+import MintErc20 from '@/components/feature/mint-token/mint-erc20'
 
 const Page = () => {
   return (
@@ -20,7 +21,9 @@ const Page = () => {
             <TabsContent value="cw20">
               <MintCw20 />
             </TabsContent>
-            <TabsContent value="erc20"></TabsContent>
+            <TabsContent value="erc20">
+              <MintErc20 />
+            </TabsContent>
           </Tabs>
         </div>
       </section>

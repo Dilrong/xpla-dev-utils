@@ -1,11 +1,19 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import axios from 'axios' // Added axios import
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -15,19 +23,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import { useConfigStore } from '@/lib/store/config-store'
+import { makeMsgErc20Instantiate, erc20CodeId } from '@/lib/xpla/contract/erc20'
 import { useConnectedWallet } from '@xpla/wallet-provider'
-import { cw20CodeId, makeMsgCw20Instantiate } from '@/lib/xpla/contract/cw20'
-import { Loader2, Coins } from 'lucide-react'
-import axios from 'axios'
+import { Coins, Loader2 } from 'lucide-react'
+import { Erc20InstantiateMsg } from '@/lib/xpla/interface/erc20.interface'
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -36,9 +37,18 @@ const formSchema = z.object({
   symbol: z.string().min(2, {
     message: 'Symbol must be at least 2 characters.',
   }),
+  decimals: z.string().min(1, {
+    message: 'Decimals is required.',
+  }),
+  initialSupply: z.string().min(1, {
+    message: 'Initial supply is required.',
+  }),
+  label: z.string().min(2, {
+    message: 'Label must be at least 2 characters.',
+  }),
 })
 
-const MintCw20 = () => {
+const MintErc20 = () => {
   const { toast } = useToast()
   const { explorer, lcd } = useConfigStore()
   const connectedWallet = useConnectedWallet()
@@ -49,6 +59,9 @@ const MintCw20 = () => {
     defaultValues: {
       name: '',
       symbol: '',
+      decimals: '18',
+      initialSupply: '1000000000000000000000000',
+      label: '',
     },
   })
 
@@ -65,27 +78,18 @@ const MintCw20 = () => {
     try {
       setIsLoading(true)
 
-      const executeMsg = {
+      const executeMsg: Erc20InstantiateMsg = {
         name: values.name,
         symbol: values.symbol,
-        decimals: 6,
-        initial_balances: [
-          {
-            address: connectedWallet.walletAddress,
-            amount: '10000000000000',
-          },
-        ],
-        mint: {
-          minter: connectedWallet.walletAddress,
-          gap: '10000000000000',
-          marketing: connectedWallet.walletAddress,
-        },
+        decimals: parseInt(values.decimals),
+        initial_supply: values.initialSupply,
+        owner: connectedWallet.walletAddress,
       }
 
-      const instantiateMsg = makeMsgCw20Instantiate(
+      const instantiateMsg = makeMsgErc20Instantiate(
         executeMsg,
-        cw20CodeId,
-        values.name,
+        erc20CodeId,
+        values.label,
         connectedWallet.walletAddress,
       )
 
@@ -138,7 +142,7 @@ const MintCw20 = () => {
       if (txConfirmed) {
         toast({
           title: 'Token created successfully! 🎉',
-          description: 'Your CW20 token has been deployed to the blockchain.',
+          description: 'Your ERC20 token has been deployed to the blockchain.',
           action: (
             <Button
               variant="outline"
@@ -209,10 +213,10 @@ const MintCw20 = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Coins className="size-5" />
-          Create CW-20 Token
+          Create ERC-20 Token
         </CardTitle>
         <CardDescription>
-          Deploy a new CW-20 token contract on XPLA blockchain.
+          Deploy a new ERC-20 token contract on XPLA blockchain.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -250,6 +254,56 @@ const MintCw20 = () => {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="decimals"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Decimals</FormLabel>
+                  <FormControl>
+                    <Input placeholder="18" {...field} disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="initialSupply"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Initial Supply</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="1000000000000000000000000"
+                      {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="label"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contract Label</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="my-erc20-token"
+                      {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
@@ -257,7 +311,7 @@ const MintCw20 = () => {
                   Creating Token...
                 </>
               ) : (
-                'Create CW-20 Token'
+                'Create ERC-20 Token'
               )}
             </Button>
           </form>
@@ -267,4 +321,4 @@ const MintCw20 = () => {
   )
 }
 
-export default MintCw20
+export default MintErc20

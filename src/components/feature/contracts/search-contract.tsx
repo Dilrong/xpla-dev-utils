@@ -7,6 +7,7 @@ import { useConfigStore } from '@/lib/store/config-store'
 import { useContractStore } from '@/lib/store/contract-store'
 import axios from 'axios'
 import { ChangeEvent, useState } from 'react'
+import { bech32 } from 'bech32'
 
 const SearchContract = () => {
   const { lcd } = useConfigStore()
@@ -19,52 +20,101 @@ const SearchContract = () => {
     setAddress,
   } = useContractStore()
   const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+
+  // bech32 주소 유효성 검증
+  const isValidBech32Address = (address: string): boolean => {
+    try {
+      if (!address.startsWith('xpla1')) {
+        return false
+      }
+      bech32.decode(address)
+      return true
+    } catch {
+      return false
+    }
+  }
 
   const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
 
-    try {
-      const res = await axios.get(`${lcd}/cosmwasm/wasm/v1/contract/${value}`)
-      setAddress(res.data.address)
+    // 입력값이 비어있으면 에러 상태 초기화
+    if (!value.trim()) {
       setError(false)
+      setErrorMessage('')
+      setAddress('')
+      return
+    }
 
-      // Contract store HistoryList
-      const newAddress = res.data.address
-      const storedAddresses = historyList
+    // bech32 주소 형식 검증
+    if (!isValidBech32Address(value)) {
+      setError(true)
+      setErrorMessage('Invalid XPLA address format. Must start with "xpla1"')
+      setAddress('')
+      return
+    }
 
-      if (!storedAddresses.includes(newAddress)) {
-        storedAddresses.push(newAddress)
+    try {
+      setError(false)
+      setErrorMessage('')
 
-        if (storedAddresses.length > 5) {
-          storedAddresses.shift()
-        }
+      const res = await axios.get(`${lcd}/cosmwasm/wasm/v1/contract/${value}`)
 
-        setHistoryList(JSON.stringify(storedAddresses))
+      if (res.data && res.data.address) {
+        setAddress(res.data.address)
+
+        // Contract store HistoryList - 중복 방지 및 최신 순으로 정렬
+        setHistoryList(res.data.address)
+
+        toast({
+          title: 'Contract found',
+          description: 'Contract address has been loaded successfully.',
+        })
+      } else {
+        throw new Error('Invalid contract response')
       }
     } catch (err) {
       console.error(err)
       setError(true)
+      setErrorMessage('Contract not found or invalid contract address')
+      setAddress('')
+
+      toast({
+        title: 'Contract not found',
+        description: 'Please check the contract address and try again.',
+        variant: 'destructive',
+      })
     }
   }
 
   const onClickFavorite = async (event: ChangeEvent<HTMLInputElement>) => {
-    // TODO: input에 있는 값 가져와야한다.
     const { value } = event.target
 
-    const newAddress = value
-    const storedAddresses = favoriteList
-
-    if (storedAddresses.includes(newAddress)) {
-      storedAddresses.push(newAddress)
-
-      if (storedAddresses.length > 10) {
-        toast({
-          title: 'favoriteList cannot exceed 10.',
-        })
-      }
-
-      setFavoriteList(JSON.stringify(storedAddresses))
+    if (!isValidBech32Address(value)) {
+      toast({
+        title: 'Invalid address',
+        description: 'Cannot add invalid address to favorites.',
+        variant: 'destructive',
+      })
+      return
     }
+
+    // 이미 즐겨찾기에 있는지 확인
+    if (favoriteList.includes(value)) {
+      toast({
+        title: 'Already in favorites',
+        description: 'This address is already in your favorites.',
+      })
+      return
+    }
+
+    // 즐겨찾기에 추가
+    setFavoriteList(value)
+
+    toast({
+      title: 'Added to favorites',
+      description: 'Contract address has been added to favorites.',
+    })
   }
 
   return (
@@ -73,12 +123,16 @@ const SearchContract = () => {
         <Input
           type="string"
           id="address"
-          placeholder="Contract Address"
+          placeholder="xpla1..."
           onChange={handleChange}
         />
         <StoreContract />
       </div>
-      {error && <p className="text-sm text-rose-600">Contract is Not Found</p>}
+      {error && (
+        <p className="text-sm text-red-600">
+          {errorMessage || 'Contract is not found'}
+        </p>
+      )}
     </div>
   )
 }

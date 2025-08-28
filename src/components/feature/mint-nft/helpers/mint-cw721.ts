@@ -47,11 +47,11 @@ async function mintCw721(
     feeDenoms: ['axpla'],
   }
 
-  const signTx = await connectedWallet.sign(transactionMsg)
+  const signTx = await connectedWallet.sign(transactionMsg as any)
   toast({
     title: 'tx broadcasting...',
   })
-  const broadcastResult = await lcd.tx.broadcast(signTx.result)
+  const broadcastResult = await lcd.tx.broadcast(signTx.result as any)
 
   if (broadcastResult) {
     const txHash = broadcastResult.txhash

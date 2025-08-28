@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import SearchContract from '@/components/feature/contracts/search-contract'
 import QueryContract from '@/components/feature/contracts/query-contract'
+import ExecuteContract from '@/components/feature/contracts/execute-contract'
 
 const Page = () => {
   return (
@@ -24,7 +25,9 @@ const Page = () => {
             <TabsContent value="query">
               <QueryContract />
             </TabsContent>
-            <TabsContent value="execute"></TabsContent>
+            <TabsContent value="execute">
+              <ExecuteContract />
+            </TabsContent>
           </Tabs>
         </div>
       </section>

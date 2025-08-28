@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import MintCw721 from '@/components/feature/mint-nft/mint-cw721'
+import { MintCw721 } from '@/components/feature/mint-nft/mint-cw721'
+import MintErc721 from '@/components/feature/mint-nft/mint-erc721'
 
 const Page = () => {
   return (
@@ -20,7 +21,9 @@ const Page = () => {
             <TabsContent value="cw721">
               <MintCw721 />
             </TabsContent>
-            <TabsContent value="erc721"></TabsContent>
+            <TabsContent value="erc721">
+              <MintErc721 />
+            </TabsContent>
           </Tabs>
         </div>
       </section>

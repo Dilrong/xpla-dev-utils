@@ -3,7 +3,15 @@
 import { FormEvent, useState } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { base64ToBytes, bytesToBase64 } from '@/lib/utils'
+import { FileText } from 'lucide-react'
 
 const Base64Convert = () => {
   const [base64, setBase64] = useState('')
@@ -37,31 +45,45 @@ const Base64Convert = () => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="grid w-full items-center gap-1.5 space-y-2 py-4">
-        <Label htmlFor="text">Text</Label>
-        <Textarea
-          id="text"
-          placeholder="Input the text you want to convert to base64"
-          onChangeCapture={(e) => {
-            handleChange(e)
-          }}
-          value={bytes}
-        />
-      </div>
-      <div className="grid w-full items-center gap-1.5 space-y-2 py-4">
-        <Label htmlFor="base64">Base64</Label>
-        {error && <p className="text-sm text-rose-600">{error}</p>}
-        <Textarea
-          id="base64"
-          placeholder="Input the base64 you want to convert to text"
-          onChangeCapture={(e) => {
-            handleChange(e)
-          }}
-          value={base64}
-        />
-      </div>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <FileText className="size-5" />
+          Base64 Converter
+        </CardTitle>
+        <CardDescription>
+          Convert between text and Base64 encoding
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="text">Text</Label>
+          <Textarea
+            id="text"
+            placeholder="Input the text you want to convert to base64"
+            onChangeCapture={(e) => {
+              handleChange(e)
+            }}
+            value={bytes}
+            rows={4}
+          />
+        </div>
+
+        <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="base64">Base64</Label>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <Textarea
+            id="base64"
+            placeholder="Input the base64 you want to convert to text"
+            onChangeCapture={(e) => {
+              handleChange(e)
+            }}
+            value={base64}
+            rows={4}
+          />
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
