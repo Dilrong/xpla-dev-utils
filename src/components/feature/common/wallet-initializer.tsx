@@ -1,31 +1,35 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { getChainOptions, WalletProvider } from '@xpla/wallet-provider'
+import { WalletProvider, useChainOptions } from '@xpla/wallet-provider'
+import { ReactNode } from 'react'
+import { Loader2 } from 'lucide-react'
 
 interface Props {
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 const WalletInitializer = ({ children }: Props) => {
-  const [renderComponent, setRenderComponent] = useState(<></>)
+  const chainOptions = useChainOptions()
 
-  useEffect(() => {
-    getChainOptions().then((options) => {
-      if (typeof window !== 'undefined') {
-        setRenderComponent(
-          <WalletProvider
-            walletConnectChainIds={options.walletConnectChainIds}
-            defaultNetwork={options.defaultNetwork}
-          >
-            {children}
-          </WalletProvider>,
-        )
-      }
-    })
-  }, [children])
+  if (!chainOptions) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex items-center gap-3 rounded-full border border-border/70 bg-card/80 px-5 py-3 text-sm text-muted-foreground shadow-sm">
+          <Loader2 className="size-4 animate-spin" />
+          Loading wallet environment...
+        </div>
+      </div>
+    )
+  }
 
-  return renderComponent
+  return (
+    <WalletProvider
+      walletConnectChainIds={chainOptions.walletConnectChainIds}
+      defaultNetwork={chainOptions.defaultNetwork}
+    >
+      {children}
+    </WalletProvider>
+  )
 }
 
 export default WalletInitializer

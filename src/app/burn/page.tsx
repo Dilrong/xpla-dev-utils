@@ -1,15 +1,15 @@
 import { BurnWrapper } from '@/components/feature/burn/burn-wrapper'
+import { PageHero, PageShell } from '@/components/feature/common/page-shell'
 
 export default function BurnPage() {
   return (
-    <div className="container mx-auto py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Burn</h1>
-        <p className="text-muted-foreground">
-          Burn tokens and NFTs to reduce supply or remove them completely.
-        </p>
-      </div>
+    <PageShell>
+      <PageHero
+        eyebrow="Supply Control"
+        title="Burn assets on XPLA"
+        description="Reduce supply or retire assets permanently with guided burn flows for both CW20 and CW721 contracts."
+      />
       <BurnWrapper />
-    </div>
+    </PageShell>
   )
 }

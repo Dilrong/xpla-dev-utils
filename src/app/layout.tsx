@@ -41,17 +41,17 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function LocaleLayout({
+export default function RootLayout({
   children,
-  params: { locale },
 }: {
   children: React.ReactNode
-  params: { locale: string }
 }) {
   return (
-    <html lang={locale}>
-      <body>
-        {/*<NextIntlClientProvider messages={messages}>*/}
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="xpla-wallet" />
+      </head>
+      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -60,14 +60,16 @@ export default async function LocaleLayout({
         >
           <WalletInitializer>
             <TooltipProvider>
-              <Header />
-              {children}
-              <Footer />
+              <div className="relative flex min-h-screen flex-col">
+                <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_hsl(var(--primary)/0.15),_transparent_35%),radial-gradient(circle_at_bottom_left,_hsl(var(--accent-foreground)/0.06),_transparent_30%)]" />
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
               <Toaster />
             </TooltipProvider>
           </WalletInitializer>
         </ThemeProvider>
-        {/*</NextIntlClientProvider>*/}
         <Analytics />
       </body>
     </html>

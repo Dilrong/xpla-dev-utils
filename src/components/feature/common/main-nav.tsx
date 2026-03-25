@@ -9,18 +9,28 @@ const MainNav = () => {
   const pathname = usePathname()
 
   return (
-    <div className="mr-4 hidden md:flex">
-      <Link href="/" className="mr-6 flex items-center space-x-2">
-        <b>XPLA Utils</b>
+    <div className="hidden min-w-0 items-center gap-6 md:flex">
+      <Link href="/" className="flex min-w-fit items-center gap-3">
+        <div className="flex size-10 items-center justify-center rounded-2xl bg-primary text-sm font-semibold text-primary-foreground shadow-sm">
+          X
+        </div>
+        <div className="space-y-0.5">
+          <p className="text-sm font-semibold tracking-[0.18em] text-foreground/70">
+            XPLA DEV
+          </p>
+          <p className="text-base font-semibold text-foreground">Utils</p>
+        </div>
       </Link>
-      <nav className="flex items-center gap-4 text-sm lg:gap-6">
-        {menuConfig.mainNav.map((nav, index) => (
+      <nav className="flex flex-wrap items-center gap-2 text-sm">
+        {menuConfig.mainNav.map((nav) => (
           <Link
-            key={index}
+            key={nav.href}
             href={`${nav.href}`}
             className={cn(
-              'transition-colors hover:text-foreground/80',
-              pathname === nav.href ? 'text-foreground' : 'text-foreground/60',
+              'rounded-full px-3 py-2 font-medium transition-colors',
+              pathname === nav.href
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-foreground/65 hover:bg-secondary hover:text-foreground',
             )}
           >
             {nav.title}

@@ -8,14 +8,15 @@ import WalletConnect from '@/components/feature/common/wallet-connect'
 
 const Headers = () => {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex min-h-20 max-w-screen-2xl items-center gap-3 py-3">
         <MainNav />
         <MobileNav />
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end"></div>
-        <ModeToggle />
-        <NetToggle />
-        <WalletConnect />
+        <div className="flex flex-1 items-center justify-end gap-2">
+          <WalletConnect />
+          <NetToggle />
+          <ModeToggle />
+        </div>
       </div>
     </header>
   )

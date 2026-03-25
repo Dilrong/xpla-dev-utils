@@ -9,16 +9,15 @@ interface Props {
 
 export default function StatusBar({ history }: Props) {
   return (
-    <div className="flex">
+    <div className="flex gap-1.5">
       {history.map((request, index) => (
         <Tooltip key={index}>
           <TooltipTrigger>
             <div
-              key={index}
-              className={`mr-1 h-6 w-1 ${
+              className={`h-7 w-1.5 rounded-full ${
                 request.success ? 'bg-green-500' : 'bg-red-500'
               }`}
-            ></div>
+            />
           </TooltipTrigger>
           <TooltipContent>
             <p>Height: {request.height}</p>
@@ -26,6 +25,9 @@ export default function StatusBar({ history }: Props) {
           </TooltipContent>
         </Tooltip>
       ))}
+      {!history.length ? (
+        <div className="text-sm text-muted-foreground">Collecting samples...</div>
+      ) : null}
     </div>
   )
 }

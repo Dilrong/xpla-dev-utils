@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { useConfigStore } from '@/lib/store/config-store'
 import { useToast } from '@/components/ui/use-toast'
@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Loader2, Search, Hash, Clock, User, ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Hash, Loader2, Search } from 'lucide-react'
 
 interface Block {
   block_id: {
@@ -48,7 +48,7 @@ export function BlockInfo() {
   const [isSearching, setIsSearching] = useState(false)
 
   // 최신 블록 정보 가져오기
-  const fetchLatestBlock = async () => {
+  const fetchLatestBlock = useCallback(async () => {
     try {
       setIsLoading(true)
       const response = await axios.get(
@@ -65,7 +65,7 @@ export function BlockInfo() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [lcd, toast])
 
   // 특정 높이의 블록 검색
   const searchBlock = async () => {
@@ -103,11 +103,12 @@ export function BlockInfo() {
 
   // 컴포넌트 마운트 시 최신 블록 가져오기
   useEffect(() => {
-    fetchLatestBlock()
-    // 10초마다 최신 블록 업데이트
-    const interval = setInterval(fetchLatestBlock, 10000)
+    void fetchLatestBlock()
+    const interval = setInterval(() => {
+      void fetchLatestBlock()
+    }, 10000)
     return () => clearInterval(interval)
-  }, [lcd])
+  }, [fetchLatestBlock])
 
   const formatTime = (timeString: string) => {
     return new Date(timeString).toLocaleString()
@@ -225,7 +226,7 @@ export function BlockInfo() {
                 placeholder="Enter block height..."
                 value={searchHeight}
                 onChange={(e) => setSearchHeight(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && searchBlock()}
+                onKeyDown={(e) => e.key === 'Enter' && void searchBlock()}
               />
             </div>
             <Button onClick={searchBlock} disabled={isSearching}>

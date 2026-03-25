@@ -14,15 +14,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Loader2,
-  Search,
-  Hash,
-  ArrowUpRight,
-  Clock,
-  User,
-  Coins,
-} from 'lucide-react'
+import { ArrowUpRight, Hash, Loader2, Search } from 'lucide-react'
 
 interface Transaction {
   tx_response: {
@@ -145,7 +137,7 @@ export function TransactionInfo() {
                 placeholder="Enter transaction hash..."
                 value={txHash}
                 onChange={(e) => setTxHash(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && searchTransaction()}
+                onKeyDown={(e) => e.key === 'Enter' && void searchTransaction()}
               />
             </div>
             <Button onClick={searchTransaction} disabled={isSearching}>
@@ -181,7 +173,7 @@ export function TransactionInfo() {
                   </Label>
                   <div className="flex items-center gap-2">
                     <div
-                      className={`h-3 w-3 rounded-full ${
+                      className={`size-3 rounded-full ${
                         transaction.tx_response.code === 0
                           ? 'bg-green-500'
                           : 'bg-red-500'

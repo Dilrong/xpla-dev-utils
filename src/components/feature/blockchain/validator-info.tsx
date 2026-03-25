@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { useConfigStore } from '@/lib/store/config-store'
 import { useToast } from '@/components/ui/use-toast'
@@ -15,13 +15,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
+  ArrowUpRight,
+  Coins,
   Loader2,
   Search,
   Shield,
-  ArrowUpRight,
   TrendingUp,
-  Coins,
-  User,
 } from 'lucide-react'
 
 interface Validator {
@@ -80,7 +79,7 @@ export function ValidatorInfo() {
   const [isSearching, setIsSearching] = useState(false)
 
   // 모든 검증자 정보 가져오기
-  const fetchValidators = async () => {
+  const fetchValidators = useCallback(async () => {
     try {
       setIsLoading(true)
       const response = await axios.get(
@@ -97,10 +96,10 @@ export function ValidatorInfo() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [lcd, toast])
 
   // 검증자 세트 정보 가져오기
-  const fetchValidatorSet = async () => {
+  const fetchValidatorSet = useCallback(async () => {
     try {
       const response = await axios.get(
         `${lcd}/cosmos/base/tendermint/v1beta1/validatorsets/latest`,
@@ -109,7 +108,7 @@ export function ValidatorInfo() {
     } catch (error) {
       console.error('Failed to fetch validator set:', error)
     }
-  }
+  }, [lcd])
 
   // 특정 검증자 검색
   const searchValidator = async () => {
@@ -147,15 +146,14 @@ export function ValidatorInfo() {
 
   // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
-    fetchValidators()
-    fetchValidatorSet()
-    // 30초마다 업데이트
+    void fetchValidators()
+    void fetchValidatorSet()
     const interval = setInterval(() => {
-      fetchValidators()
-      fetchValidatorSet()
+      void fetchValidators()
+      void fetchValidatorSet()
     }, 30000)
     return () => clearInterval(interval)
-  }, [lcd])
+  }, [fetchValidatorSet, fetchValidators])
 
   const formatTokens = (tokens: string) => {
     const amount = parseInt(tokens) / 1000000 // 6 decimals
@@ -227,7 +225,7 @@ export function ValidatorInfo() {
                 placeholder="Enter validator address..."
                 value={searchAddress}
                 onChange={(e) => setSearchAddress(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && searchValidator()}
+                onKeyDown={(e) => e.key === 'Enter' && void searchValidator()}
               />
             </div>
             <Button onClick={searchValidator} disabled={isSearching}>

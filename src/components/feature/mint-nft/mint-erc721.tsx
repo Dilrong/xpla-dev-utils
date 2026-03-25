@@ -32,8 +32,7 @@ import {
   makeMsgErc721Instantiate,
 } from '@/lib/xpla/contract/erc721'
 import { Erc721InstantiateMsg } from '@/lib/xpla/interface/erc721.interface'
-import { MsgInstantiateContractV1 } from '@xpla/xpla.js'
-import { Loader2, Image } from 'lucide-react'
+import { Loader2, Image as ImageIcon } from 'lucide-react'
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -130,7 +129,7 @@ const MintErc721 = () => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Image className="size-5" />
+          <ImageIcon className="size-5" />
           Create ERC-721 NFT Contract
         </CardTitle>
         <CardDescription>
