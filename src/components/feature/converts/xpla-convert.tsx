@@ -12,22 +12,35 @@ import {
 import { ChangeEvent, useState } from 'react'
 import { Coins } from 'lucide-react'
 
+const MICRO_XPLA = 1_000_000
+
 const XplaConvert = () => {
-  const [axpla, setAxpla] = useState(0)
-  const [xpla, setXpla] = useState(0)
+  const [axpla, setAxpla] = useState('1000000')
+  const [xpla, setXpla] = useState('1')
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target
-    const WEI = 10 ** 18
+
+    if (!value) {
+      setAxpla('')
+      setXpla('')
+      return
+    }
+
+    const numericValue = Number(value)
+
+    if (Number.isNaN(numericValue)) {
+      return
+    }
 
     switch (id) {
       case 'axpla':
-        setAxpla(Number(value))
-        setXpla(Number(value) / WEI)
+        setAxpla(value)
+        setXpla((numericValue / MICRO_XPLA).toString())
         break
       case 'xpla':
-        setAxpla(Number(value) * WEI)
-        setXpla(Number(value))
+        setAxpla((numericValue * MICRO_XPLA).toString())
+        setXpla(value)
         break
       default:
         break
@@ -42,7 +55,7 @@ const XplaConvert = () => {
           XPLA Unit Converter
         </CardTitle>
         <CardDescription>
-          Convert between XPLA and aXPLA units (1 XPLA = 1,000,000 aXPLA)
+          Convert between XPLA and aXPLA units. 1 XPLA equals 1,000,000 aXPLA.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -54,6 +67,7 @@ const XplaConvert = () => {
             placeholder="1000000"
             onChange={handleChange}
             value={axpla}
+            inputMode="numeric"
           />
         </div>
         <div className="grid w-full items-center gap-1.5">
@@ -64,6 +78,7 @@ const XplaConvert = () => {
             placeholder="1"
             onChange={handleChange}
             value={xpla}
+            inputMode="decimal"
           />
         </div>
       </CardContent>

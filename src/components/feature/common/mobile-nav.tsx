@@ -18,7 +18,7 @@ const MobileNav = () => {
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+          className="mr-2 border-0 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
         >
           <svg
             strokeWidth="1.5"
@@ -52,20 +52,23 @@ const MobileNav = () => {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="border-r border-border/70 bg-background/95 pr-0">
+      <SheetContent
+        side="left"
+        className="border-r-2 border-foreground bg-background/95 pr-0"
+      >
         <MobileLink
           href="/"
           className="flex items-center gap-3"
           onOpenChange={setOpen}
         >
-          <div className="flex size-10 items-center justify-center rounded-2xl bg-primary font-semibold text-primary-foreground">
+          <div className="flex size-10 items-center justify-center border-2 border-foreground bg-foreground font-semibold text-background">
             X
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.24em] text-primary/70">
+            <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
               XPLA DEV
             </p>
-            <p className="font-semibold">Utils</p>
+            <p className="text-2xl leading-none">Utils</p>
           </div>
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
@@ -76,10 +79,10 @@ const MobileNav = () => {
                 href={`${nav.href}`}
                 onOpenChange={setOpen}
                 className={cn(
-                  'rounded-2xl border border-transparent px-4 py-3 transition-colors',
+                  'border px-4 py-3 transition-colors',
                   pathname === nav.href
-                    ? 'border-primary/20 bg-primary/10'
-                    : 'hover:border-border hover:bg-muted/60',
+                    ? 'border-foreground bg-foreground text-background'
+                    : 'border-transparent hover:border-foreground hover:bg-background',
                 )}
               >
                 <div className="space-y-1">

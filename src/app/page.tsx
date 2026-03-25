@@ -1,6 +1,18 @@
 import Link from 'next/link'
-import { ArrowRight, Blocks, ScrollText, ShieldCheck, Sparkles } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  ArrowRight,
+  Blocks,
+  ScrollText,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { PageHero, PageShell } from '@/components/feature/common/page-shell'
 import LcdStatusWrapper from '@/components/feature/main/lcd-status-wrapper'
 import { getNetworkConfig, Network } from '@/lib/config/block-chain'
@@ -12,13 +24,13 @@ export default function Home() {
   const networkCards = [
     {
       title: 'Mainnet',
-      description: 'Production endpoints for dimension_37-1.',
+      description: 'dimension_37-1 production surface.',
       network: Network.mainnet,
       icon: ShieldCheck,
     },
     {
       title: 'Testnet',
-      description: 'Cube staging endpoints for fast validation.',
+      description: 'cube_47-5 staging surface.',
       network: Network.testnet,
       icon: Sparkles,
     },
@@ -27,21 +39,21 @@ export default function Home() {
   return (
     <PageShell>
       <PageHero
-        eyebrow="Realtime Ops Surface"
-        title="XPLA developer utilities without the tab sprawl"
-        description="Monitor endpoint health, inspect chain data, search contracts, and execute common XPLA workflows from one place. The dashboard below keeps mainnet and testnet visibility side by side."
+        eyebrow="Operational Surface"
+        title="A monochrome control room for daily XPLA development"
+        description="Monitor endpoints, inspect chain state, search contracts, and move between mainnet or testnet workflows without context switching. The layout keeps structure explicit and noise low."
         actions={
           <>
             <Link
               href="/contracts"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 border-2 border-foreground bg-foreground px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-background transition-colors hover:bg-background hover:text-foreground"
             >
               Open Contracts
               <ArrowRight className="size-4" />
             </Link>
             <Link
               href="/validators"
-              className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/80 px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+              className="inline-flex items-center gap-2 border-2 border-foreground bg-background px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-foreground transition-colors hover:bg-foreground hover:text-background"
             >
               Check Validators
               <ShieldCheck className="size-4" />
@@ -51,14 +63,18 @@ export default function Home() {
       />
 
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
-        <Card className="overflow-hidden border-border/70 bg-card/80">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
+        <Card className="overflow-hidden border-foreground bg-card">
+          <CardHeader className="border-b-2 border-foreground">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-muted-foreground">
+              Workflow index
+            </p>
+            <CardTitle className="mt-3 flex items-center gap-2 text-3xl">
               <Blocks className="size-5" />
               What you can do here
             </CardTitle>
             <CardDescription>
-              Fast links into the core workflows this app exposes today.
+              Direct entry points into the chain, contract, token, and
+              conversion workflows exposed by this app.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3 md:grid-cols-2">
@@ -66,10 +82,12 @@ export default function Home() {
               <Link
                 key={item.href}
                 href={item.href || '/'}
-                className="rounded-2xl border border-border/70 bg-background/70 p-4 transition-colors hover:bg-secondary"
+                className="border-2 border-foreground bg-background p-4 transition-colors hover:bg-foreground hover:text-background"
               >
-                <p className="font-medium text-foreground">{item.title}</p>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em]">
+                  {item.title}
+                </p>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   {item.description}
                 </p>
               </Link>
@@ -77,24 +95,32 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        <Card className="border-border/70 bg-card/80">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl">
+        <Card className="border-foreground bg-foreground text-background">
+          <CardHeader className="border-b-2 border-background/25">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-background/60">
+              SDK baseline
+            </p>
+            <CardTitle className="mt-3 flex items-center gap-2 text-3xl text-background">
               <ScrollText className="size-5" />
               Current SDK baseline
             </CardTitle>
-            <CardDescription>
-              Refreshed to the current XPLA package line for ongoing work.
+            <CardDescription className="text-background/70">
+              Fixed to the current XPLA package line used by this utility
+              surface.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-2xl border border-border/70 bg-background/70 p-4">
-              <p className="text-sm text-muted-foreground">@xpla/xpla.js</p>
-              <p className="mt-2 text-3xl font-semibold">1.9.0</p>
+            <div className="border-2 border-background/25 bg-background px-4 py-5 text-foreground">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-muted-foreground">
+                @xpla/xpla.js
+              </p>
+              <p className="mt-3 text-4xl font-semibold">1.9.0</p>
             </div>
-            <div className="rounded-2xl border border-border/70 bg-background/70 p-4">
-              <p className="text-sm text-muted-foreground">@xpla/wallet-provider</p>
-              <p className="mt-2 text-3xl font-semibold">1.7.3</p>
+            <div className="border-2 border-background/25 bg-background px-4 py-5 text-foreground">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-muted-foreground">
+                @xpla/wallet-provider
+              </p>
+              <p className="mt-3 text-4xl font-semibold">1.7.3</p>
             </div>
           </CardContent>
         </Card>
@@ -102,14 +128,22 @@ export default function Home() {
 
       <section className="space-y-6">
         {networkCards.map(({ title, description, network, icon: Icon }) => (
-          <section key={network} className="space-y-4">
+          <section
+            key={network}
+            className="space-y-4 border-t-4 border-foreground pt-6"
+          >
             <div className="flex items-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <div className="flex size-11 items-center justify-center border-2 border-foreground bg-foreground text-background">
                 <Icon className="size-5" />
               </div>
               <div>
-                <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-                <p className="text-sm text-muted-foreground">{description}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+                  Endpoint band
+                </p>
+                <h2 className="text-3xl">{title}</h2>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {description}
+                </p>
               </div>
             </div>
             <div className="grid gap-4 xl:grid-cols-3">

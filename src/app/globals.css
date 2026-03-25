@@ -4,84 +4,99 @@
 
 @layer base {
   :root {
-    --background: 210 33% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 6%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 6%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 6%;
 
-    --primary: 214 90% 42%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 6%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 94%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 210 31% 94%;
-    --muted-foreground: 215 16% 40%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 36%;
 
-    --accent: 160 30% 92%;
-    --accent-foreground: 215 65% 20%;
+    --accent: 0 0% 92%;
+    --accent-foreground: 0 0% 8%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 214 27% 88%;
-    --input: 214 27% 88%;
-    --ring: 214 90% 42%;
+    --border: 0 0% 9%;
+    --input: 0 0% 82%;
+    --ring: 0 0% 6%;
 
-    --radius: 0.9rem;
+    --radius: 0.18rem;
   }
 
   .dark {
-    --background: 223 45% 8%;
-    --foreground: 210 40% 96%;
+    --background: 0 0% 4%;
+    --foreground: 0 0% 96%;
 
-    --card: 224 39% 11%;
-    --card-foreground: 210 40% 96%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 96%;
 
-    --popover: 224 39% 11%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 96%;
 
-    --primary: 198 93% 60%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 0 0% 96%;
+    --primary-foreground: 0 0% 6%;
 
-    --secondary: 217 33% 18%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 96%;
 
-    --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 72%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 68%;
 
-    --accent: 199 40% 18%;
-    --accent-foreground: 183 100% 90%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 96%;
 
     --destructive: 0 63% 40%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 216 27% 20%;
-    --input: 216 27% 20%;
-    --ring: 198 93% 60%;
+    --border: 0 0% 88%;
+    --input: 0 0% 16%;
+    --ring: 0 0% 96%;
   }
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     @apply border-border;
   }
 
   ::selection {
-    @apply bg-primary/20 text-foreground;
+    @apply bg-foreground text-background;
   }
 
   body {
-    font-family:
-      'Avenir Next', 'Segoe UI', 'Noto Sans KR', 'Apple SD Gothic Neo',
-      sans-serif;
-    background-image:
-      radial-gradient(circle at top, hsl(var(--primary) / 0.08), transparent 28%),
+    font-family: 'Avenir Next', 'Helvetica Neue', 'Noto Sans KR',
+      'Apple SD Gothic Neo', sans-serif;
+    background-image: linear-gradient(
+        to right,
+        hsl(var(--foreground) / 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        hsl(var(--foreground) / 0.05) 1px,
+        transparent 1px
+      ),
       linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
+    background-size:
+      28px 28px,
+      28px 28px,
+      100% 100%;
     @apply bg-background text-foreground;
   }
 
@@ -89,6 +104,20 @@
   h2,
   h3,
   h4 {
-    letter-spacing: -0.03em;
+    font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua',
+      'Georgia', serif;
+    font-weight: 500;
+    letter-spacing: -0.045em;
+  }
+
+  h5,
+  h6,
+  label,
+  button {
+    letter-spacing: -0.02em;
+  }
+
+  summary {
+    list-style: none;
   }
 }

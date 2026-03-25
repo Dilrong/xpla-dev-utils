@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Network } from '@/lib/config/block-chain'
 import { useConfigStore } from '@/lib/store/config-store'
-import { summarizeAddress } from '@/lib/utils'
+import { normalizeUrl, summarizeAddress } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -84,10 +84,6 @@ interface ConsensusSnapshot {
   totalBondedTokens: string
   plan: UpgradePlan | null
   refreshedAt: string
-}
-
-function normalizeUrl(url: string) {
-  return url.endsWith('/') ? url.slice(0, -1) : url
 }
 
 async function getJson<T>(url: string): Promise<T | null> {

@@ -51,7 +51,7 @@ export default function RootLayout({
       <head>
         <meta name="xpla-wallet" />
       </head>
-      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+      <body className="min-h-screen bg-background text-foreground antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -61,7 +61,7 @@ export default function RootLayout({
           <WalletInitializer>
             <TooltipProvider>
               <div className="relative flex min-h-screen flex-col">
-                <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_hsl(var(--primary)/0.15),_transparent_35%),radial-gradient(circle_at_bottom_left,_hsl(var(--accent-foreground)/0.06),_transparent_30%)]" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[linear-gradient(180deg,hsl(var(--foreground)/0.07),transparent)]" />
                 <Header />
                 <main className="flex-1">{children}</main>
                 <Footer />

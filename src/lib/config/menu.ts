@@ -22,6 +22,11 @@ export const menuConfig: MenuConfig = {
       description: 'Review the bonded validator set and upgrade schedule.',
     },
     {
+      title: 'Cosmos',
+      href: '/cosmos',
+      description: 'Inspect accounts, convert bech32 prefixes, and review chain params.',
+    },
+    {
       title: 'Contracts',
       href: '/contracts',
       description: 'Search, query, and execute CosmWasm contracts.',
