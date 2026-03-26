@@ -18,7 +18,6 @@ import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -207,9 +206,6 @@ const MintCw20 = () => {
     <Card>
       <CardHeader>
         <CardTitle>Create CW-20 Token</CardTitle>
-        <CardDescription>
-          Deploy a new CW-20 token contract on XPLA blockchain.
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

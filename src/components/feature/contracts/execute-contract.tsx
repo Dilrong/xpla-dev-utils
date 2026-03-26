@@ -7,7 +7,6 @@ import { z } from 'zod'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -270,10 +269,6 @@ const ExecuteContract = () => {
       <Card>
         <CardHeader>
           <CardTitle>Contract Execute</CardTitle>
-          <CardDescription>
-            Execute smart contract functions. The message will be automatically
-            converted to base64.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -286,13 +281,10 @@ const ExecuteContract = () => {
                 disabled
                 className="bg-background"
               />
-              <p className="text-sm text-muted-foreground">
-                The selected contract is reused from the search panel.
-              </p>
               {profile ? (
                 <p className="text-sm text-muted-foreground">
-                  Detected profile: {getContractStandardLabel(profile.standard)}{' '}
-                  {getContractFamilyLabel(profile.family).toLowerCase()}.
+                  {getContractStandardLabel(profile.standard)} /{' '}
+                  {getContractFamilyLabel(profile.family)}
                 </p>
               ) : null}
             </div>
@@ -318,15 +310,8 @@ const ExecuteContract = () => {
                 rows={6}
                 disabled={isLoading}
               />
-              <p className="text-sm text-muted-foreground">
-                Keep only the payload body. Wallet signing and base64 encoding
-                are handled for you.
-              </p>
               {defaultExample ? (
-                <p className="text-sm text-muted-foreground">
-                  The first live example, {defaultExample.name.toLowerCase()},
-                  is already loaded.
-                </p>
+                <p className="text-sm text-muted-foreground">{defaultExample.name}</p>
               ) : null}
               {form.formState.errors.executeMessage && (
                 <p className="text-sm text-destructive">
@@ -339,24 +324,19 @@ const ExecuteContract = () => {
               <summary className="cursor-pointer list-none px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-foreground">
-                    Optional funds
+                    Funds
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    Send axpla with this execute message
-                  </p>
+                  <p className="text-xs text-muted-foreground">Open</p>
                 </div>
               </summary>
               <div className="space-y-2 border-t border-border p-4">
-                <Label htmlFor="funds">Funds (Optional)</Label>
+                <Label htmlFor="funds">Funds</Label>
                 <Input
                   id="funds"
                   placeholder="1000000 (in axpla)"
                   {...form.register('funds')}
                   disabled={isLoading}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Amount in axpla (1 XPLA = 1,000,000 axpla)
-                </p>
               </div>
             </details>
 
@@ -365,7 +345,7 @@ const ExecuteContract = () => {
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-medium text-foreground">
-                      Change prefilled example
+                      Examples
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {examples.length} live examples
@@ -399,8 +379,7 @@ const ExecuteContract = () => {
               </details>
             ) : (
               <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
-                No standard execute examples were inferred for this contract.
-                Use the raw JSON message field directly.
+                No examples.
               </div>
             )}
 
@@ -419,7 +398,7 @@ const ExecuteContract = () => {
         <Card className="border-amber-200 bg-amber-50 dark:border-amber-900/40 dark:bg-amber-950/20">
           <CardContent className="pt-6">
             <p className="text-sm text-amber-800 dark:text-amber-300">
-              Please connect your wallet to execute contracts.
+              Connect wallet.
             </p>
           </CardContent>
         </Card>

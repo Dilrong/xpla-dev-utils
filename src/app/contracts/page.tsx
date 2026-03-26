@@ -7,11 +7,7 @@ import { PageHero, PageShell } from '@/components/feature/common/page-shell'
 const Page = () => {
   return (
     <PageShell>
-      <PageHero
-        eyebrow="Contract Workbench"
-        title="Query and execute contracts"
-        description="Search once, then use a prefilled query or execute payload. Extra metadata stays collapsed until you open it."
-      />
+      <PageHero title="Contracts" />
       <div className="space-y-4">
         <SearchContract />
         <Tabs defaultValue="query" className="w-full">

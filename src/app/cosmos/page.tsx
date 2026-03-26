@@ -11,11 +11,7 @@ export const metadata: Metadata = {
 export default function CosmosPage() {
   return (
     <PageShell>
-      <PageHero
-        eyebrow="Cosmos Toolbox"
-        title="Developer-first XPLA inspection utilities"
-        description="Inspect accounts, flip bech32 prefixes, and check chain governance or slashing parameters from one smoother Cosmos workflow."
-      />
+      <PageHero title="Cosmos" />
       <CosmosTools />
     </PageShell>
   )

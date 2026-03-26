@@ -8,11 +8,7 @@ import { PageHero, PageShell } from '@/components/feature/common/page-shell'
 const Page = () => {
   return (
     <PageShell>
-      <PageHero
-        eyebrow="Converters"
-        title="Utility conversions for daily XPLA work"
-        description="Switch between chain units, human time, Base64 payloads, and IPFS references from one compact toolbox."
-      />
+      <PageHero title="Converters" />
       <Tabs defaultValue="axpla" className="w-full">
         <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-xl border border-border bg-card p-2 md:grid-cols-4">
           <TabsTrigger value="axpla">aXPLA</TabsTrigger>

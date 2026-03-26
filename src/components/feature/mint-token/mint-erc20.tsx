@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -211,9 +210,6 @@ const MintErc20 = () => {
     <Card>
       <CardHeader>
         <CardTitle>Create ERC-20 Token</CardTitle>
-        <CardDescription>
-          Deploy a new ERC-20 token contract on XPLA blockchain.
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

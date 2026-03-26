@@ -19,7 +19,6 @@ import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -188,10 +187,6 @@ export function BurnCw721() {
     <Card>
       <CardHeader>
         <CardTitle>CW721 NFT Burn</CardTitle>
-        <CardDescription>
-          Burn CW721 NFT to remove it completely. Burned NFT cannot be
-          recovered.
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

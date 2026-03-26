@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -111,10 +110,6 @@ export function TransactionInfo() {
       <Card>
         <CardHeader>
           <CardTitle>Search Transaction</CardTitle>
-          <CardDescription>
-            Look up a transaction hash and keep the raw messages and logs out of
-            the way until you need them.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
@@ -141,9 +136,6 @@ export function TransactionInfo() {
         <Card>
           <CardHeader>
             <CardTitle>Transaction Summary</CardTitle>
-            <CardDescription>
-              Status first, raw payloads and logs only when you expand them.
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
@@ -219,7 +211,7 @@ export function TransactionInfo() {
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-medium text-foreground">
-                      View messages
+                      Messages
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {transaction.tx_response.tx.body.messages.length} payloads
@@ -256,7 +248,7 @@ export function TransactionInfo() {
                     <summary className="cursor-pointer list-none px-4 py-3">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-medium text-foreground">
-                          View execution logs
+                          Logs
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {transaction.tx_response.logs.length} log groups
@@ -311,7 +303,7 @@ export function TransactionInfo() {
                 transaction.tx_response.raw_log && (
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-muted-foreground">
-                      Error Log
+                      Error
                     </Label>
                     <div className="rounded-lg border border-red-200 bg-red-50 p-3">
                       <p className="text-sm text-red-700">

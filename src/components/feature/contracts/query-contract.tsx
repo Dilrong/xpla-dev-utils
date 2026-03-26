@@ -11,7 +11,6 @@ import { bytesToBase64 } from '@/lib/utils'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -168,10 +167,6 @@ const QueryContract = () => {
       <Card>
         <CardHeader>
           <CardTitle>Contract Query</CardTitle>
-          <CardDescription>
-            Query smart contract state using JSON messages. The message will be
-            automatically converted to base64.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
@@ -183,13 +178,10 @@ const QueryContract = () => {
               disabled
               className="bg-background"
             />
-            <p className="text-sm text-muted-foreground">
-              The address is populated from the contract search panel above.
-            </p>
             {profile ? (
               <p className="text-sm text-muted-foreground">
-                Detected profile: {getContractStandardLabel(profile.standard)}{' '}
-                {getContractFamilyLabel(profile.family).toLowerCase()}.
+                {getContractStandardLabel(profile.standard)} /{' '}
+                {getContractFamilyLabel(profile.family)}
               </p>
             ) : null}
           </div>
@@ -204,14 +196,8 @@ const QueryContract = () => {
               className="font-mono text-sm"
               rows={6}
             />
-            <p className="text-sm text-muted-foreground">
-              Write the raw JSON query message exactly as the contract expects.
-            </p>
             {defaultExample ? (
-              <p className="text-sm text-muted-foreground">
-                The first live example, {defaultExample.name.toLowerCase()}, is
-                already loaded.
-              </p>
+              <p className="text-sm text-muted-foreground">{defaultExample.name}</p>
             ) : null}
           </div>
 
@@ -220,7 +206,7 @@ const QueryContract = () => {
               <summary className="cursor-pointer list-none px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-medium text-foreground">
-                    Change prefilled example
+                    Examples
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {examples.length} live examples
@@ -251,8 +237,7 @@ const QueryContract = () => {
             </details>
           ) : (
             <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
-              No standard query examples were inferred for this contract. Use
-              the raw JSON message field directly.
+              No examples.
             </div>
           )}
 

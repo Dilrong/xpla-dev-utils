@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -42,9 +41,6 @@ const EpochConvert = () => {
     <Card>
       <CardHeader>
         <CardTitle>Epoch Time Converter</CardTitle>
-        <CardDescription>
-          Convert Unix epoch timestamps to human-readable dates
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">

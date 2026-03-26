@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -47,9 +46,6 @@ const Base64Convert = () => {
     <Card>
       <CardHeader>
         <CardTitle>Base64 Converter</CardTitle>
-        <CardDescription>
-          Convert between text and Base64 encoding
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid w-full items-center gap-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">

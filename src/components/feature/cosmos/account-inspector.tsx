@@ -12,7 +12,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -279,10 +278,6 @@ export default function AccountInspector() {
       <Card className="border-border/70 bg-card/80">
         <CardHeader>
           <CardTitle>Account Inspector</CardTitle>
-          <CardDescription>
-            Pull auth, bank, staking, and rewards data for any XPLA bech32
-            address from the currently selected LCD endpoint.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <form
@@ -313,7 +308,7 @@ export default function AccountInspector() {
           </form>
 
           <div className="rounded-2xl border border-border/70 bg-background/60 px-4 py-3 text-sm text-muted-foreground">
-            Active LCD: <span className="font-mono text-foreground">{lcd}</span>
+            LCD <span className="font-mono text-foreground">{lcd}</span>
           </div>
 
           {error ? (
@@ -324,9 +319,7 @@ export default function AccountInspector() {
 
           {!snapshot && !error ? (
             <div className="rounded-2xl border border-dashed border-border/70 bg-background/40 p-6 text-sm text-muted-foreground">
-              Start with an account, valoper, or valcons address. The inspector
-              normalizes the query to the `xpla` account prefix before calling
-              the Cosmos endpoints.
+              Paste address.
             </div>
           ) : null}
 

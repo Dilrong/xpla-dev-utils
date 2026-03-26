@@ -7,11 +7,7 @@ import { PageHero, PageShell } from '@/components/feature/common/page-shell'
 const Page = () => {
   return (
     <PageShell>
-      <PageHero
-        eyebrow="Chain Explorer"
-        title="Blockchain lookup tools"
-        description="Search blocks, transactions, and validators from compact summaries first. Raw chain details stay tucked away until you need them."
-      />
+      <PageHero title="Blockchain" />
       <Tabs defaultValue="blocks" className="w-full">
         <TabsList className="grid h-auto w-full grid-cols-1 gap-2 rounded-xl border border-border bg-card p-2 md:grid-cols-3">
           <TabsTrigger value="blocks">Blocks</TabsTrigger>

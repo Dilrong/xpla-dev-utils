@@ -8,7 +8,7 @@ interface PageShellProps {
 
 interface PageHeroProps {
   title: string
-  description: string
+  description?: string
   eyebrow?: string
   actions?: ReactNode
 }
@@ -51,23 +51,16 @@ export function PageHero({
             <h1 className="type-reveal reveal-2 max-w-4xl scroll-m-20 text-4xl leading-[0.96] text-foreground md:text-5xl xl:text-6xl">
               {title}
             </h1>
-            <p className="type-reveal reveal-3 max-w-3xl text-base leading-7 text-muted-foreground md:text-lg">
-              {description}
-            </p>
+            {description ? (
+              <p className="type-reveal reveal-3 max-w-3xl text-base leading-7 text-muted-foreground md:text-lg">
+                {description}
+              </p>
+            ) : null}
           </div>
         </div>
         {actions ? (
-          <div className="type-reveal reveal-4 flex flex-col justify-between gap-6 border-t border-border/70 pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0 xl:pl-10">
-            <div className="space-y-3">
-              <p className="text-[0.7rem] uppercase tracking-[0.28em] text-muted-foreground">
-                Start here
-              </p>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Keep the first move obvious. Secondary controls can stay out of
-                sight until the task needs them.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-4 md:gap-5">{actions}</div>
+          <div className="type-reveal reveal-4 flex flex-wrap gap-4 border-t border-border/70 pt-6 lg:items-end lg:justify-end lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0 xl:pl-10">
+            {actions}
           </div>
         ) : null}
       </div>

@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -50,9 +49,6 @@ const XplaConvert = () => {
     <Card>
       <CardHeader>
         <CardTitle>XPLA Unit Converter</CardTitle>
-        <CardDescription>
-          Convert between XPLA and aXPLA units. 1 XPLA equals 1,000,000 aXPLA.
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid w-full items-center gap-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">

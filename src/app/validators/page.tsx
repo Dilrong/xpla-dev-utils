@@ -10,11 +10,7 @@ export const metadata: Metadata = {
 export default function ValidatorsPage() {
   return (
     <PageShell>
-      <PageHero
-        eyebrow="Consensus Overview"
-        title="Validator set and upgrade readiness"
-        description="Track bonded validators, current chain height, and on-chain upgrade plans from the selected network."
-      />
+      <PageHero title="Validators" />
       <ValidatorConsensus />
     </PageShell>
   )

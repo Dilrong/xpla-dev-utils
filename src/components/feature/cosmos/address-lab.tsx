@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -78,10 +77,6 @@ export default function AddressLab() {
       <Card className="border-border/70 bg-card/80">
         <CardHeader>
           <CardTitle>Address Lab</CardTitle>
-          <CardDescription>
-            Flip one bech32 payload across account, validator operator, and
-            validator consensus prefixes without leaving the page.
-          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -104,8 +99,7 @@ export default function AddressLab() {
 
           {!value.trim() ? (
             <div className="rounded-2xl border border-dashed border-border/70 bg-background/40 p-6 text-sm text-muted-foreground">
-              Paste any `xpla`, `xplavaloper`, or `xplavalcons` address to inspect
-              the raw bytes and switch prefixes.
+              Paste address.
             </div>
           ) : null}
 

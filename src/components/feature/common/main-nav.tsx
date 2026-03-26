@@ -31,13 +31,11 @@ const MainNav = () => {
 
   return (
     <div className="hidden min-w-0 items-center gap-12 md:flex">
-      <Link href="/" className="min-w-fit transition-opacity hover:opacity-75">
-        <p className="text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground">
-          XPLA developer utilities
-        </p>
-        <p className="mt-1 text-[1.7rem] leading-none tracking-[-0.08em] text-foreground">
-          XPLA Dev Utils
-        </p>
+      <Link
+        href="/"
+        className="min-w-fit text-[1.7rem] leading-none tracking-[-0.08em] text-foreground transition-opacity hover:opacity-75"
+      >
+        XPLA Dev Utils
       </Link>
       <nav className="flex flex-wrap items-center gap-7">
         <Link
@@ -70,22 +68,14 @@ const MainNav = () => {
                   )}
                 >
                   {group.title}
-                  <span className="ml-2 text-[0.58rem] uppercase tracking-[0.24em] text-muted-foreground">
-                    Browse
-                  </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="start"
                 className="w-[21rem] rounded-3xl border border-border/70 bg-card/95 p-2.5 shadow-[0_24px_60px_-40px_hsl(var(--foreground)/0.35)]"
               >
-                <DropdownMenuLabel className="space-y-1.5 p-4">
-                  <p className="text-sm tracking-[-0.02em] text-foreground">
-                    {group.title}
-                  </p>
-                  <p className="text-xs leading-5 text-muted-foreground">
-                    {group.description}
-                  </p>
+                <DropdownMenuLabel className="p-4 text-sm tracking-[-0.02em] text-foreground">
+                  {group.title}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {group.items.map((item) => (
@@ -96,16 +86,9 @@ const MainNav = () => {
                   >
                     <Link
                       href={item.href || group.href}
-                      className="flex flex-col items-start gap-1.5"
+                      className="text-sm tracking-[-0.02em] text-foreground"
                     >
-                      <span className="text-sm tracking-[-0.02em] text-foreground">
-                        {item.title}
-                      </span>
-                      {item.description ? (
-                        <span className="text-xs leading-5 text-muted-foreground">
-                          {item.description}
-                        </span>
-                      ) : null}
+                      {item.title}
                     </Link>
                   </DropdownMenuItem>
                 ))}

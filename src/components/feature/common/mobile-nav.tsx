@@ -42,15 +42,10 @@ const MobileNav = () => {
         <div className="px-7">
           <MobileLink
             href="/"
-            className="block transition-opacity hover:opacity-75"
+            className="block text-[1.55rem] leading-none tracking-[-0.07em] transition-opacity hover:opacity-75"
             onOpenChange={setOpen}
           >
-            <p className="text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground">
-              XPLA developer utilities
-            </p>
-            <p className="mt-1 text-[1.55rem] leading-none tracking-[-0.07em]">
-              XPLA Dev Utils
-            </p>
+            XPLA Dev Utils
           </MobileLink>
         </div>
         <ScrollArea className="my-5 h-[calc(100vh-8.5rem)] pb-12">
@@ -65,19 +60,9 @@ const MobileNav = () => {
                   : 'border-border/70 bg-card/70 hover:border-border hover:bg-card',
               )}
             >
-              <div className="space-y-1">
-                <p className="text-[0.68rem] uppercase tracking-[0.22em] text-muted-foreground">
-                  Overview
-                </p>
-                <p className="text-base tracking-[-0.03em]">
-                  {menuConfig.overview.title}
-                </p>
-                {menuConfig.overview.description ? (
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    {menuConfig.overview.description}
-                  </p>
-                ) : null}
-              </div>
+              <p className="text-base tracking-[-0.03em]">
+                {menuConfig.overview.title}
+              </p>
             </MobileLink>
             {menuConfig.groups.map((group) => {
               const isGroupActive = group.items.some((item) =>
@@ -88,25 +73,12 @@ const MobileNav = () => {
                 <details
                   key={group.title}
                   open={isGroupActive}
-                    className="group rounded-[1.35rem] border border-border/70 bg-card/75"
-                  >
+                  className="group rounded-[1.35rem] border border-border/70 bg-card/75"
+                >
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4 p-5">
-                    <div className="space-y-1">
-                      <p
-                        className={cn(
-                          'text-[0.68rem] uppercase tracking-[0.22em] text-muted-foreground',
-                          isGroupActive ? 'text-foreground/80' : '',
-                        )}
-                      >
-                        {group.title}
-                      </p>
-                      <p className="text-base tracking-[-0.03em] text-foreground">
-                        {group.description}
-                      </p>
-                    </div>
-                    <span className="pt-1 text-[0.58rem] uppercase tracking-[0.24em] text-muted-foreground">
-                      Browse
-                    </span>
+                    <p className="text-base tracking-[-0.03em] text-foreground">
+                      {group.title}
+                    </p>
                   </summary>
                   <div className="space-y-2.5 border-t border-border/70 p-4">
                     {group.items.map((item) => (
@@ -121,16 +93,7 @@ const MobileNav = () => {
                             : 'border-transparent bg-background/60 hover:border-border hover:bg-background',
                         )}
                       >
-                        <div className="space-y-1">
-                          <p className="text-sm tracking-[-0.02em]">
-                            {item.title}
-                          </p>
-                          {item.description ? (
-                            <p className="text-xs leading-5 text-muted-foreground">
-                              {item.description}
-                            </p>
-                          ) : null}
-                        </div>
+                        <p className="text-sm tracking-[-0.02em]">{item.title}</p>
                       </MobileLink>
                     ))}
                   </div>

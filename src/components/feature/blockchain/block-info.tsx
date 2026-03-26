@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -124,10 +123,6 @@ export function BlockInfo() {
       <Card>
         <CardHeader>
           <CardTitle>Search Block</CardTitle>
-          <CardDescription>
-            Search for a specific block by height. The result shows the key
-            fields first and tucks the raw identifiers underneath.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
@@ -240,7 +235,7 @@ export function BlockInfo() {
                       {searchedBlock.block_id.parts.hash}
                     </p>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Total parts: {searchedBlock.block_id.parts.total}
+                      {searchedBlock.block_id.parts.total}
                     </p>
                   </div>
                 </div>
@@ -253,15 +248,11 @@ export function BlockInfo() {
       <Card>
         <CardHeader>
           <CardTitle>Latest Block</CardTitle>
-          <CardDescription>
-            Current chain head reduced to a compact summary. Open details only
-            if you need raw identifiers.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
-              Loading latest block...
+              Loading...
             </div>
           ) : latestBlock ? (
             <div className="space-y-4">
@@ -350,7 +341,7 @@ export function BlockInfo() {
             </div>
           ) : (
             <p className="text-muted-foreground">
-              No block information available.
+              No data.
             </p>
           )}
         </CardContent>

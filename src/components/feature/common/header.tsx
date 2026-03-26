@@ -22,13 +22,11 @@ const Headers = () => {
         <div className="flex min-h-[4.75rem] items-center justify-between gap-3 py-2 md:hidden">
           <div className="flex min-w-0 items-center gap-5">
             <MobileNav />
-            <Link href="/" className="min-w-0 transition-opacity hover:opacity-75">
-              <p className="text-[0.58rem] uppercase tracking-[0.28em] text-muted-foreground">
-                XPLA utilities
-              </p>
-              <p className="mt-1 truncate text-lg leading-none tracking-[-0.06em] text-foreground">
-                XPLA Dev Utils
-              </p>
+            <Link
+              href="/"
+              className="min-w-0 truncate text-lg leading-none tracking-[-0.06em] text-foreground transition-opacity hover:opacity-75"
+            >
+              XPLA Dev Utils
             </Link>
           </div>
           <div className="flex items-center gap-2.5">

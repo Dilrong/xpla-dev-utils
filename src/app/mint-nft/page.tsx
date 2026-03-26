@@ -6,11 +6,7 @@ import { PageHero, PageShell } from '@/components/feature/common/page-shell'
 const Page = () => {
   return (
     <PageShell>
-      <PageHero
-        eyebrow="NFT Factory"
-        title="Mint and deploy NFT contracts"
-        description="Create CW721 or ERC721 collections with wallet-backed deployment flows tuned for XPLA."
-      />
+      <PageHero title="Mint NFT" />
       <Tabs defaultValue="cw721" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="cw721">CW-721</TabsTrigger>

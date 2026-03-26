@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -194,10 +193,6 @@ export function ValidatorInfo() {
       <Card>
         <CardHeader>
           <CardTitle>Search Validator</CardTitle>
-          <CardDescription>
-            Search for a validator operator address and inspect the most useful
-            staking fields first.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
@@ -224,9 +219,6 @@ export function ValidatorInfo() {
         <Card>
           <CardHeader>
             <CardTitle>Validator Summary</CardTitle>
-            <CardDescription>
-              Show the core staking fields first and keep the rest collapsed.
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -290,7 +282,7 @@ export function ValidatorInfo() {
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-medium text-foreground">
-                      Validator details
+                      Details
                     </p>
                     <p className="text-xs text-muted-foreground">Open</p>
                   </div>
@@ -383,14 +375,11 @@ export function ValidatorInfo() {
       <Card>
         <CardHeader>
           <CardTitle>Active Validators</CardTitle>
-          <CardDescription>
-            Network-wide validator counts first, with the loaded list collapsed.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
-              Loading validators...
+              Loading...
             </div>
           ) : (
             <div className="space-y-4">
@@ -425,7 +414,7 @@ export function ValidatorInfo() {
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-medium text-foreground">
-                      Browse loaded validator list
+                      List
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Showing first {Math.min(validators.length, 10)}

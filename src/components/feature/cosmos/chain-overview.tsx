@@ -6,7 +6,6 @@ import { formatDuration, normalizeUrl } from '@/lib/utils'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -196,13 +195,7 @@ export default function ChainOverview() {
     <div className="space-y-4">
       <Card className="border-border/70 bg-card/80">
         <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <CardTitle>Chain Overview</CardTitle>
-            <CardDescription className="mt-2">
-              Surface the chain ID, staking boundaries, slashing thresholds, and
-              current governance window from one screen.
-            </CardDescription>
-          </div>
+          <CardTitle>Chain Overview</CardTitle>
           <Button
             type="button"
             variant="outline"
@@ -214,7 +207,7 @@ export default function ChainOverview() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="rounded-2xl border border-border/70 bg-background/60 px-4 py-3 text-sm text-muted-foreground">
-            Active LCD: <span className="font-mono text-foreground">{lcd}</span>
+            LCD <span className="font-mono text-foreground">{lcd}</span>
           </div>
 
           {error ? (
@@ -225,7 +218,7 @@ export default function ChainOverview() {
 
           {!snapshot && !error && isLoading ? (
             <div className="rounded-2xl border border-dashed border-border/70 bg-background/40 p-6 text-sm text-muted-foreground">
-              Loading chain parameters and recent proposals...
+              Loading...
             </div>
           ) : null}
 
@@ -393,12 +386,7 @@ export default function ChainOverview() {
 
               <Card className="border-border/70 bg-background/70">
                 <CardHeader>
-                  <CardTitle className="text-base">
-                    Recent governance proposals
-                  </CardTitle>
-                  <CardDescription>
-                    Updated {formatDateTime(snapshot.fetchedAt)}
-                  </CardDescription>
+                  <CardTitle className="text-base">Proposals</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {snapshot.proposals.length ? (
@@ -435,7 +423,7 @@ export default function ChainOverview() {
                     ))
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      No recent proposals returned by the endpoint.
+                      No proposals.
                     </p>
                   )}
                 </CardContent>

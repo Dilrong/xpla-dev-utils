@@ -19,7 +19,6 @@ import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -199,9 +198,6 @@ export function MintCw721() {
     <Card>
       <CardHeader>
         <CardTitle>Create CW-721 NFT Contract</CardTitle>
-        <CardDescription>
-          Deploy a new CW-721 NFT contract on XPLA blockchain.
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

@@ -18,7 +18,6 @@ import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -192,10 +191,6 @@ export function BurnCw20() {
     <Card>
       <CardHeader>
         <CardTitle>CW20 Token Burn</CardTitle>
-        <CardDescription>
-          Burn CW20 tokens to reduce supply. Burned tokens are permanently
-          removed.
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

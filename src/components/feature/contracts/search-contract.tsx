@@ -12,7 +12,6 @@ import StoreContract from '@/components/feature/contracts/store-contract'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -203,10 +202,6 @@ const SearchContract = () => {
     <Card>
       <CardHeader>
         <CardTitle>Contract address</CardTitle>
-        <CardDescription>
-          Load a live CosmWasm contract once, then reuse the selected address in
-          the query and execute tabs below.
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form
@@ -249,10 +244,6 @@ const SearchContract = () => {
               {isLoading ? 'Loading...' : 'Search'}
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Uses the selected LCD endpoint and keeps the last loaded contracts
-            available in the saved menu.
-          </p>
         </form>
 
         {errorMessage ? (
@@ -266,7 +257,7 @@ const SearchContract = () => {
             <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
               <div className="space-y-2">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Selected contract
+                  Contract
                 </p>
                 <h3 className="text-xl font-semibold text-foreground">
                   {snapshot.info.label}
@@ -283,11 +274,6 @@ const SearchContract = () => {
                 ) : null}
                 <p className="break-all font-mono text-sm text-muted-foreground">
                   {snapshot.address}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {profile
-                    ? `${profile.queryExamples.length} query examples and ${profile.executeExamples.length} execute examples are ready.`
-                    : 'The address is ready for the query and execute tabs.'}
                 </p>
               </div>
               <Button
@@ -465,15 +451,13 @@ const SearchContract = () => {
                           {formatHistoryMessage(entry.msg)}
                         </pre>
                       ) : (
-                        <p className="mt-4 text-sm text-muted-foreground">
-                          No payload was returned for this history entry.
-                        </p>
+                        <p className="mt-4 text-sm text-muted-foreground">No payload.</p>
                       )}
                     </details>
                   ))
                 ) : (
                   <div className="rounded-[calc(var(--radius)-0.25rem)] border border-dashed border-border bg-secondary/35 p-4 text-sm text-muted-foreground">
-                    The LCD did not return any contract history entries.
+                    No history.
                   </div>
                 )}
               </div>
