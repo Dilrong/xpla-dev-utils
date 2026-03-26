@@ -1,11 +1,21 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import { ContractSnapshot } from '@/lib/xpla/contract/metadata'
+import { ContractProfile } from '@/lib/xpla/contract/profile'
 
 type ContractStore = {
   address: string
   historyList: string[]
   favoriteList: string[]
+  snapshot: ContractSnapshot | null
+  profile: ContractProfile | null
   setAddress: (address: string) => void
+  setSelectedContract: (params: {
+    address: string
+    snapshot: ContractSnapshot
+    profile: ContractProfile
+  }) => void
+  clearSelectedContract: () => void
   setHistoryList: (address: string) => void
   setFavoriteList: (address: string) => void
   removeFromHistory: (address: string) => void
@@ -14,13 +24,32 @@ type ContractStore = {
   clearFavorites: () => void
 }
 
+type PersistedContractStore = Pick<
+  ContractStore,
+  'address' | 'historyList' | 'favoriteList'
+>
+
 const useContractStore = create(
-  persist<ContractStore>(
+  persist<ContractStore, [], [], PersistedContractStore>(
     (set, get) => ({
       address: '',
       historyList: [],
       favoriteList: [],
+      snapshot: null,
+      profile: null,
       setAddress: (address: string) => set({ address }),
+      setSelectedContract: ({ address, snapshot, profile }) =>
+        set({
+          address,
+          snapshot,
+          profile,
+        }),
+      clearSelectedContract: () =>
+        set({
+          address: '',
+          snapshot: null,
+          profile: null,
+        }),
       setHistoryList: (address: string) => {
         const state = get()
         const newHistoryList = [...state.historyList]
@@ -80,6 +109,12 @@ const useContractStore = create(
     }),
     {
       name: 'contract-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        address: state.address,
+        historyList: state.historyList,
+        favoriteList: state.favoriteList,
+      }),
     },
   ),
 )

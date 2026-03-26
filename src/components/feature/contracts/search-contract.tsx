@@ -1,139 +1,457 @@
 'use client'
 
+import {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import StoreContract from '@/components/feature/contracts/store-contract'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import { useConfigStore } from '@/lib/store/config-store'
 import { useContractStore } from '@/lib/store/contract-store'
-import axios from 'axios'
-import { ChangeEvent, useState } from 'react'
-import { bech32 } from 'bech32'
+import {
+  fetchContractSnapshot,
+  formatContractHistoryOperation,
+  isValidXplaAddress,
+} from '@/lib/xpla/contract/metadata'
+import {
+  fetchContractProfile,
+  getContractFamilyLabel,
+  getContractProfileSummary,
+  getContractStandardLabel,
+} from '@/lib/xpla/contract/profile'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { summarizeAddress } from '@/lib/utils'
+import {
+  ArrowUpRight,
+  Loader2,
+  Search,
+  Star,
+  StarOff,
+  Workflow,
+} from 'lucide-react'
+
+function formatHistoryMessage(message: unknown) {
+  if (message === null || message === undefined) {
+    return null
+  }
+
+  return JSON.stringify(message, null, 2)
+}
+
+function formatNumericLabel(value: string) {
+  if (!value || value === '-') {
+    return '-'
+  }
+
+  try {
+    return BigInt(value).toLocaleString()
+  } catch {
+    return value
+  }
+}
+
+function openExplorer(url: string) {
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
 
 const SearchContract = () => {
-  const { lcd } = useConfigStore()
+  const { lcd, explorer } = useConfigStore()
   const { toast } = useToast()
   const {
-    historyList,
-    setHistoryList,
+    address,
     favoriteList,
+    snapshot,
+    profile,
+    setSelectedContract,
+    clearSelectedContract,
+    setHistoryList,
     setFavoriteList,
-    setAddress,
+    removeFromFavorites,
   } = useContractStore()
-  const [error, setError] = useState(false)
+  const [inputValue, setInputValue] = useState(address)
+  const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const lastLoadedRequestRef = useRef('')
 
-  // bech32 주소 유효성 검증
-  const isValidBech32Address = (address: string): boolean => {
-    try {
-      if (!address.startsWith('xpla1')) {
-        return false
+  const isFavorite = useMemo(
+    () => Boolean(address) && favoriteList.includes(address),
+    [address, favoriteList],
+  )
+
+  const loadContract = useCallback(
+    async (nextAddress: string, options?: { silent?: boolean }) => {
+      if (!isValidXplaAddress(nextAddress)) {
+        setErrorMessage('Invalid XPLA address format. Must start with "xpla1".')
+        clearSelectedContract()
+        return
       }
-      bech32.decode(address)
-      return true
-    } catch {
-      return false
-    }
-  }
 
-  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target
+      try {
+        setIsLoading(true)
+        setErrorMessage('')
 
-    // 입력값이 비어있으면 에러 상태 초기화
-    if (!value.trim()) {
-      setError(false)
-      setErrorMessage('')
-      setAddress('')
-      return
-    }
+        const nextSnapshot = await fetchContractSnapshot(lcd, nextAddress)
+        const nextProfile = await fetchContractProfile(lcd, nextSnapshot)
 
-    // bech32 주소 형식 검증
-    if (!isValidBech32Address(value)) {
-      setError(true)
-      setErrorMessage('Invalid XPLA address format. Must start with "xpla1"')
-      setAddress('')
-      return
-    }
-
-    try {
-      setError(false)
-      setErrorMessage('')
-
-      const res = await axios.get(`${lcd}/cosmwasm/wasm/v1/contract/${value}`)
-
-      if (res.data && res.data.address) {
-        setAddress(res.data.address)
-
-        // Contract store HistoryList - 중복 방지 및 최신 순으로 정렬
-        setHistoryList(res.data.address)
-
-        toast({
-          title: 'Contract found',
-          description: 'Contract address has been loaded successfully.',
+        lastLoadedRequestRef.current = `${lcd}:${nextSnapshot.address}`
+        setInputValue(nextSnapshot.address)
+        setSelectedContract({
+          address: nextSnapshot.address,
+          snapshot: nextSnapshot,
+          profile: nextProfile,
         })
-      } else {
-        throw new Error('Invalid contract response')
-      }
-    } catch (err) {
-      console.error(err)
-      setError(true)
-      setErrorMessage('Contract not found or invalid contract address')
-      setAddress('')
+        setHistoryList(nextSnapshot.address)
 
-      toast({
-        title: 'Contract not found',
-        description: 'Please check the contract address and try again.',
-        variant: 'destructive',
-      })
+        if (!options?.silent) {
+          toast({
+            title: 'Contract loaded',
+            description: `${nextProfile.displayName} is ready with ${nextProfile.queryExamples.length} live query examples.`,
+          })
+        }
+      } catch (error) {
+        console.error(error)
+        clearSelectedContract()
+        setErrorMessage(
+          'Contract not found or the selected LCD endpoint is unavailable.',
+        )
+
+        if (!options?.silent) {
+          toast({
+            title: 'Contract not found',
+            description: 'Please check the contract address and try again.',
+            variant: 'destructive',
+          })
+        }
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [clearSelectedContract, lcd, setHistoryList, setSelectedContract, toast],
+  )
+
+  useEffect(() => {
+    if (!address) {
+      lastLoadedRequestRef.current = ''
+      return
     }
+
+    if (`${lcd}:${address}` === lastLoadedRequestRef.current) {
+      return
+    }
+
+    setInputValue(address)
+    void loadContract(address, { silent: true })
+  }, [address, lcd, loadContract])
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const nextAddress = inputValue.trim()
+    if (!nextAddress) {
+      clearSelectedContract()
+      setErrorMessage('')
+      return
+    }
+
+    await loadContract(nextAddress)
   }
 
-  const onClickFavorite = async (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target
+  const handleSelectStoredAddress = async (nextAddress: string) => {
+    await loadContract(nextAddress)
+  }
 
-    if (!isValidBech32Address(value)) {
+  const handleToggleFavorite = () => {
+    if (!address) {
       toast({
-        title: 'Invalid address',
-        description: 'Cannot add invalid address to favorites.',
+        title: 'No contract selected',
+        description: 'Load a contract before pinning it to favorites.',
         variant: 'destructive',
       })
       return
     }
 
-    // 이미 즐겨찾기에 있는지 확인
-    if (favoriteList.includes(value)) {
+    if (favoriteList.includes(address)) {
+      removeFromFavorites(address)
       toast({
-        title: 'Already in favorites',
-        description: 'This address is already in your favorites.',
+        title: 'Removed from favorites',
+        description: summarizeAddress(address, 10, 8),
       })
       return
     }
 
-    // 즐겨찾기에 추가
-    setFavoriteList(value)
-
+    setFavoriteList(address)
     toast({
       title: 'Added to favorites',
-      description: 'Contract address has been added to favorites.',
+      description: summarizeAddress(address, 10, 8),
     })
   }
 
   return (
-    <div className="space-y-2 pb-4">
-      <div className="flex flex-row">
-        <Input
-          type="string"
-          id="address"
-          placeholder="xpla1..."
-          onChange={handleChange}
-        />
-        <StoreContract />
-      </div>
-      {error && (
-        <p className="text-sm text-red-600">
-          {errorMessage || 'Contract is not found'}
-        </p>
-      )}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Search className="size-5" />
+          Contract address
+        </CardTitle>
+        <CardDescription>
+          Load a live CosmWasm contract once, then reuse the selected address in
+          the query and execute tabs below.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <form
+          onSubmit={(event) => void handleSubmit(event)}
+          className="space-y-3"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="address">Contract address</Label>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant={isFavorite ? 'secondary' : 'outline'}
+                size="sm"
+                onClick={handleToggleFavorite}
+                disabled={!address}
+                className="gap-2"
+              >
+                {isFavorite ? (
+                  <StarOff className="size-4" />
+                ) : (
+                  <Star className="size-4" />
+                )}
+                {isFavorite ? 'Unfavorite' : 'Favorite'}
+              </Button>
+              <StoreContract
+                currentAddress={address}
+                onSelectAddress={(nextAddress) =>
+                  void handleSelectStoredAddress(nextAddress)
+                }
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 lg:flex-row">
+            <Input
+              type="text"
+              id="address"
+              placeholder="xpla1..."
+              value={inputValue}
+              onChange={(event) => setInputValue(event.target.value)}
+              spellCheck={false}
+              autoCapitalize="off"
+              autoCorrect="off"
+              className="font-mono"
+            />
+            <Button type="submit" disabled={isLoading} className="lg:w-40">
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Loading
+                </>
+              ) : (
+                <>
+                  <Search className="mr-2 size-4" />
+                  Search
+                </>
+              )}
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Uses the selected LCD endpoint and keeps the last loaded contracts
+            available in the saved menu.
+          </p>
+        </form>
+
+        {errorMessage ? (
+          <div className="rounded-[calc(var(--radius)-0.2rem)] border border-destructive/20 bg-destructive/5 p-3">
+            <p className="text-sm text-destructive">{errorMessage}</p>
+          </div>
+        ) : null}
+
+        {snapshot ? (
+          <div className="space-y-4 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/25 p-4">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div className="space-y-2">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Live contract snapshot
+                </p>
+                <h3 className="text-xl font-semibold text-foreground">
+                  {snapshot.info.label}
+                </h3>
+                {profile ? (
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                      {getContractStandardLabel(profile.standard)}
+                    </span>
+                    <span className="rounded-full border border-border bg-background px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                      {getContractFamilyLabel(profile.family)}
+                    </span>
+                  </div>
+                ) : null}
+                <p className="break-all font-mono text-sm text-muted-foreground">
+                  {snapshot.address}
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  openExplorer(`${explorer}contract/${snapshot.address}`)
+                }
+                className="gap-2"
+              >
+                Open Explorer
+                <ArrowUpRight className="size-4" />
+              </Button>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Code ID
+                </p>
+                <p className="mt-2 text-lg font-semibold text-foreground">
+                  {snapshot.info.codeId}
+                </p>
+              </div>
+              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Creator
+                </p>
+                <p className="mt-2 break-all font-mono text-sm text-foreground">
+                  {snapshot.info.creator || '-'}
+                </p>
+              </div>
+              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Admin
+                </p>
+                <p className="mt-2 break-all font-mono text-sm text-foreground">
+                  {snapshot.info.admin || 'Immutable'}
+                </p>
+              </div>
+              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Created Height
+                </p>
+                <p className="mt-2 text-lg font-semibold text-foreground">
+                  {formatNumericLabel(snapshot.info.createdHeight)}
+                </p>
+              </div>
+              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Created Tx Index
+                </p>
+                <p className="mt-2 text-lg font-semibold text-foreground">
+                  {snapshot.info.createdTxIndex}
+                </p>
+              </div>
+              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  IBC Port
+                </p>
+                <p className="mt-2 break-all font-mono text-sm text-foreground">
+                  {snapshot.info.ibcPortId || '-'}
+                </p>
+              </div>
+            </div>
+
+            {profile ? (
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Workflow className="size-4 text-primary" />
+                  <p className="text-sm font-medium text-foreground">
+                    Detected profile
+                  </p>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {getContractProfileSummary(profile).map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4"
+                    >
+                      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        {item.label}
+                      </p>
+                      <p className="mt-2 break-all text-sm text-foreground">
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Workflow className="size-4 text-primary" />
+                <p className="text-sm font-medium text-foreground">
+                  Contract history
+                </p>
+                <span className="text-sm text-muted-foreground">
+                  {snapshot.history.length.toLocaleString()} entries
+                </span>
+              </div>
+
+              {snapshot.history.length ? (
+                <div className="space-y-3">
+                  {snapshot.history.map((entry, index) => (
+                    <details
+                      key={`${entry.operation}-${entry.updated?.block_height}-${index}`}
+                      className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4"
+                    >
+                      <summary className="cursor-pointer list-none">
+                        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-foreground">
+                              {formatContractHistoryOperation(entry.operation)}
+                            </p>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              Code ID {entry.code_id || '-'} at height{' '}
+                              {formatNumericLabel(
+                                entry.updated?.block_height || '-',
+                              )}
+                            </p>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            tx index {entry.updated?.tx_index ?? '-'}
+                          </p>
+                        </div>
+                      </summary>
+                      {formatHistoryMessage(entry.msg) ? (
+                        <pre className="mt-4 max-h-80 overflow-auto rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4 text-xs leading-6 text-muted-foreground">
+                          {formatHistoryMessage(entry.msg)}
+                        </pre>
+                      ) : (
+                        <p className="mt-4 text-sm text-muted-foreground">
+                          No payload was returned for this history entry.
+                        </p>
+                      )}
+                    </details>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-[calc(var(--radius)-0.25rem)] border border-dashed border-border bg-background p-4 text-sm text-muted-foreground">
+                  The LCD did not return any contract history entries.
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
   )
 }
 

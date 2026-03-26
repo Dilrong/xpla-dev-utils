@@ -46,6 +46,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const shouldRenderAnalytics = process.env.VERCEL === '1'
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -61,7 +63,7 @@ export default function RootLayout({
           <WalletInitializer>
             <TooltipProvider>
               <div className="relative flex min-h-screen flex-col">
-                <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[linear-gradient(180deg,hsl(var(--foreground)/0.07),transparent)]" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[linear-gradient(180deg,hsl(var(--primary)/0.12),transparent)]" />
                 <Header />
                 <main className="flex-1">{children}</main>
                 <Footer />
@@ -70,7 +72,7 @@ export default function RootLayout({
             </TooltipProvider>
           </WalletInitializer>
         </ThemeProvider>
-        <Analytics />
+        {shouldRenderAnalytics ? <Analytics /> : null}
       </body>
     </html>
   )

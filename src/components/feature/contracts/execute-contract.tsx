@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -20,9 +20,13 @@ import { useConfigStore } from '@/lib/store/config-store'
 import { useContractStore } from '@/lib/store/contract-store'
 import { useConnectedWallet } from '@xpla/wallet-provider'
 import { Loader2, Play, Copy, CheckCircle, Zap } from 'lucide-react'
-import { bytesToBase64 } from '@/lib/utils'
 import { MsgExecuteContract, Coin } from '@xpla/xpla.js'
-import axios from 'axios' // Added axios import
+import axios from 'axios'
+import {
+  getContractFamilyLabel,
+  getContractStandardLabel,
+} from '@/lib/xpla/contract/profile'
+import { isValidXplaAddress } from '@/lib/xpla/contract/metadata'
 
 const formSchema = z.object({
   funds: z.string().optional(),
@@ -33,18 +37,18 @@ type FormData = z.infer<typeof formSchema>
 
 const ExecuteContract = () => {
   const { toast } = useToast()
-  const { explorer, lcd } = useConfigStore() // Added lcd to useConfigStore
-  const { address } = useContractStore()
+  const { explorer, lcd } = useConfigStore()
+  const { address, profile } = useContractStore()
   const connectedWallet = useConnectedWallet()
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const lastAutoMessageRef = useRef('{}')
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       funds: '',
-      executeMessage:
-        '{"transfer":{"recipient":"xpla1...","amount":"1000000"}}',
+      executeMessage: '{}',
     },
   })
 
@@ -68,7 +72,7 @@ const ExecuteContract = () => {
     }
 
     // 주소 형식 검증
-    if (!address.startsWith('xpla1')) {
+    if (!isValidXplaAddress(address)) {
       toast({
         title: 'Invalid contract address',
         description: 'Contract address must be a valid XPLA address.',
@@ -92,10 +96,6 @@ const ExecuteContract = () => {
         })
         return
       }
-
-      // Convert message to base64
-      const utf8Bytes = new TextEncoder().encode(data.executeMessage)
-      const base64Message = bytesToBase64(utf8Bytes)
 
       // Prepare funds if provided
       let funds = undefined
@@ -204,8 +204,11 @@ const ExecuteContract = () => {
         })
       }
 
-      // Reset form
-      form.reset()
+      // Keep the detected live example in place after a successful execution.
+      form.reset({
+        funds: '',
+        executeMessage: lastAutoMessageRef.current,
+      })
     } catch (err) {
       console.error('Execute error:', err)
 
@@ -254,82 +257,22 @@ const ExecuteContract = () => {
     }
   }
 
-  const examples = [
-    {
-      name: 'Transfer Tokens',
-      message: '{"transfer":{"recipient":"xpla1...","amount":"1000000"}}',
-      description: 'Transfer tokens to another address',
-    },
-    {
-      name: 'Mint NFT',
-      message:
-        '{"mint":{"token_id":"1","owner":"xpla1...","token_uri":"https://..."}}',
-      description: 'Mint a new NFT',
-    },
-    {
-      name: 'Approve',
-      message: '{"approve":{"spender":"xpla1...","amount":"500000"}}',
-      description: 'Approve spending of tokens',
-    },
-    {
-      name: 'Send NFT',
-      message:
-        '{"send_nft":{"contract":"xpla1...","token_id":"1","msg":"base64_encoded_msg"}}',
-      description: 'Send NFT to another contract',
-    },
-    {
-      name: 'Update Admin',
-      message: '{"update_admin":{"admin":"xpla1..."}}',
-      description: 'Update contract admin',
-    },
-    // ERC20 Examples
-    {
-      name: 'ERC20 Transfer',
-      message: '{"transfer":{"recipient":"xpla1...","amount":"1000000"}}',
-      description: 'ERC20 token transfer',
-    },
-    {
-      name: 'ERC20 Approve',
-      message: '{"approve":{"spender":"xpla1...","amount":"1000000"}}',
-      description: 'ERC20 approve spending',
-    },
-    {
-      name: 'ERC20 Mint',
-      message: '{"mint":{"recipient":"xpla1...","amount":"1000000"}}',
-      description: 'ERC20 mint new tokens',
-    },
-    {
-      name: 'ERC20 Burn',
-      message: '{"burn":{"amount":"1000000"}}',
-      description: 'ERC20 burn tokens',
-    },
-    // ERC721 Examples
-    {
-      name: 'ERC721 Mint',
-      message:
-        '{"mint":{"token_id":"1","owner":"xpla1...","token_uri":"https://..."}}',
-      description: 'ERC721 mint new NFT',
-    },
-    {
-      name: 'ERC721 Transfer',
-      message:
-        '{"transfer":{"from":"xpla1...","to":"xpla1...","token_id":"1"}}',
-      description: 'ERC721 transfer NFT',
-    },
-    {
-      name: 'ERC721 Approve',
-      message: '{"approve":{"to":"xpla1...","token_id":"1"}}',
-      description: 'ERC721 approve NFT transfer',
-    },
-    {
-      name: 'ERC721 Burn',
-      message: '{"burn":{"token_id":"1"}}',
-      description: 'ERC721 burn NFT',
-    },
-  ]
+  const examples = useMemo(() => profile?.executeExamples ?? [], [profile])
+
+  useEffect(() => {
+    const nextAutoMessage = examples[0]?.payload ?? '{}'
+
+    form.reset({
+      funds: '',
+      executeMessage: nextAutoMessage,
+    })
+    form.clearErrors('executeMessage')
+    lastAutoMessageRef.current = nextAutoMessage
+  }, [address, examples, form])
 
   const loadExample = (message: string) => {
     form.setValue('executeMessage', message)
+    lastAutoMessageRef.current = message
   }
 
   return (
@@ -347,15 +290,24 @@ const ExecuteContract = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
+            <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
               <Label htmlFor="contract-address">Contract Address</Label>
               <Input
                 id="contract-address"
                 value={address || ''}
                 placeholder="Search for a contract first..."
                 disabled
-                className="bg-muted"
+                className="bg-background"
               />
+              <p className="text-sm text-muted-foreground">
+                The selected contract is reused from the search panel.
+              </p>
+              {profile ? (
+                <p className="text-sm text-muted-foreground">
+                  Detected profile: {getContractStandardLabel(profile.standard)}{' '}
+                  {getContractFamilyLabel(profile.family).toLowerCase()}.
+                </p>
+              ) : null}
             </div>
 
             <div className="space-y-2">
@@ -399,11 +351,15 @@ const ExecuteContract = () => {
                 placeholder="Enter your execute message in JSON format..."
                 {...form.register('executeMessage')}
                 className="font-mono text-sm"
-                rows={4}
+                rows={6}
                 disabled={isLoading}
               />
+              <p className="text-sm text-muted-foreground">
+                Keep only the payload body. Wallet signing and base64 encoding
+                are handled for you.
+              </p>
               {form.formState.errors.executeMessage && (
-                <p className="text-sm text-red-600">
+                <p className="text-sm text-destructive">
                   {form.formState.errors.executeMessage.message}
                 </p>
               )}
@@ -434,39 +390,46 @@ const ExecuteContract = () => {
         <CardHeader>
           <CardTitle>Quick Examples</CardTitle>
           <CardDescription>
-            Click on an example to load it into the form
+            Live examples generated from the selected contract profile
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {examples.map((example, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                onClick={() => loadExample(example.message)}
-                className="h-auto justify-start p-3 text-left"
-                disabled={isLoading}
-              >
-                <div>
-                  <div className="text-sm font-medium">{example.name}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    {example.description}
+          {examples.length ? (
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {examples.map((example) => (
+                <Button
+                  key={example.name}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => loadExample(example.payload)}
+                  className="h-auto justify-start rounded-[calc(var(--radius)-0.2rem)] p-3 text-left"
+                  disabled={isLoading}
+                >
+                  <div>
+                    <div className="text-sm font-medium">{example.name}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {example.description}
+                    </div>
+                    <div className="mt-1 truncate font-mono text-xs text-muted-foreground">
+                      {example.payload}
+                    </div>
                   </div>
-                  <div className="mt-1 truncate font-mono text-xs text-muted-foreground">
-                    {example.message}
-                  </div>
-                </div>
-              </Button>
-            ))}
-          </div>
+                </Button>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
+              No standard execute examples were inferred for this contract. Use
+              the raw JSON message field directly.
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {!connectedWallet && (
-        <Card className="border-yellow-200 bg-yellow-50">
+        <Card className="border-amber-200 bg-amber-50 dark:border-amber-900/40 dark:bg-amber-950/20">
           <CardContent className="pt-6">
-            <p className="text-sm text-yellow-800">
+            <p className="text-sm text-amber-800 dark:text-amber-300">
               Please connect your wallet to execute contracts.
             </p>
           </CardContent>

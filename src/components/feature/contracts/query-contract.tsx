@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import axios from 'axios'
 import { useConfigStore } from '@/lib/store/config-store'
@@ -19,16 +19,22 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
 import { Loader2, Search, Copy, CheckCircle } from 'lucide-react'
+import {
+  getContractFamilyLabel,
+  getContractStandardLabel,
+} from '@/lib/xpla/contract/profile'
+import { isValidXplaAddress } from '@/lib/xpla/contract/metadata'
 
 const QueryContract = () => {
   const { lcd } = useConfigStore()
-  const { address } = useContractStore()
+  const { address, profile } = useContractStore()
   const { toast } = useToast()
-  const [message, setMessage] = useState('{"balance":{"address":"xpla1..."}}')
+  const [message, setMessage] = useState('{}')
   const [result, setResult] = useState({})
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
+  const lastAutoMessageRef = useRef('{}')
 
   const handleChange = (event: FormEvent<HTMLTextAreaElement>) => {
     const { value } = event.currentTarget
@@ -46,7 +52,7 @@ const QueryContract = () => {
     }
 
     // 주소 형식 검증
-    if (!address.startsWith('xpla1')) {
+    if (!isValidXplaAddress(address)) {
       toast({
         title: 'Invalid contract address',
         description: 'Contract address must be a valid XPLA address.',
@@ -149,19 +155,20 @@ const QueryContract = () => {
     }
   }
 
-  const examples = [
-    { name: 'Balance Query', query: '{"balance":{"address":"xpla1..."}}' },
-    { name: 'Token Info', query: '{"token_info":{}}' },
-    {
-      name: 'All Accounts',
-      query: '{"all_accounts":{"start_after":"xpla1...","limit":10}}',
-    },
-    { name: 'Owner Of', query: '{"owner_of":{"token_id":"1"}}' },
-    { name: 'Nft Info', query: '{"nft_info":{"token_id":"1"}}' },
-  ]
+  const examples = useMemo(() => profile?.queryExamples ?? [], [profile])
+
+  useEffect(() => {
+    const nextAutoMessage = examples[0]?.payload ?? '{}'
+
+    setMessage(nextAutoMessage)
+    lastAutoMessageRef.current = nextAutoMessage
+    setResult({})
+    setError('')
+  }, [address, examples])
 
   const loadExample = (query: string) => {
     setMessage(query)
+    lastAutoMessageRef.current = query
   }
 
   return (
@@ -178,15 +185,24 @@ const QueryContract = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
+          <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
             <Label htmlFor="contract-address">Contract Address</Label>
             <Input
               id="contract-address"
               value={address || ''}
               placeholder="Search for a contract first..."
               disabled
-              className="bg-muted"
+              className="bg-background"
             />
+            <p className="text-sm text-muted-foreground">
+              The address is populated from the contract search panel above.
+            </p>
+            {profile ? (
+              <p className="text-sm text-muted-foreground">
+                Detected profile: {getContractStandardLabel(profile.standard)}{' '}
+                {getContractFamilyLabel(profile.family).toLowerCase()}.
+              </p>
+            ) : null}
           </div>
 
           <div className="space-y-2">
@@ -197,30 +213,43 @@ const QueryContract = () => {
               value={message}
               onChange={handleChange}
               className="font-mono text-sm"
-              rows={4}
+              rows={6}
             />
+            <p className="text-sm text-muted-foreground">
+              Write the raw JSON query message exactly as the contract expects.
+            </p>
           </div>
 
           <div className="space-y-2">
             <Label>Quick Examples</Label>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-              {examples.map((example, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => loadExample(example.query)}
-                  className="h-auto justify-start p-2 text-left"
-                >
-                  <div>
-                    <div className="text-xs font-medium">{example.name}</div>
-                    <div className="truncate font-mono text-xs text-muted-foreground">
-                      {example.query}
+            {examples.length ? (
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                {examples.map((example) => (
+                  <Button
+                    key={example.name}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => loadExample(example.payload)}
+                    className="h-auto justify-start rounded-[calc(var(--radius)-0.2rem)] p-3 text-left"
+                  >
+                    <div>
+                      <div className="text-sm font-medium">{example.name}</div>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        {example.description}
+                      </div>
+                      <div className="mt-1 truncate font-mono text-xs text-muted-foreground">
+                        {example.payload}
+                      </div>
                     </div>
-                  </div>
-                </Button>
-              ))}
-            </div>
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
+                No standard query examples were inferred for this contract. Use
+                the raw JSON message field directly.
+              </div>
+            )}
           </div>
 
           <Button
@@ -244,9 +273,9 @@ const QueryContract = () => {
       </Card>
 
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-destructive/20 bg-destructive/5">
           <CardContent className="pt-6">
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-destructive">{error}</p>
           </CardContent>
         </Card>
       )}
@@ -277,7 +306,7 @@ const QueryContract = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="rounded-lg bg-muted p-4">
+            <div className="max-h-[28rem] overflow-auto rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
               <JSONPretty id="json-pretty" data={result} className="text-sm" />
             </div>
           </CardContent>

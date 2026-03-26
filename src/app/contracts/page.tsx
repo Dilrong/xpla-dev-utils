@@ -15,14 +15,14 @@ const Page = () => {
       <div className="space-y-4">
         <SearchContract />
         <Tabs defaultValue="query" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid h-auto w-full grid-cols-1 gap-2 rounded-xl border border-border bg-card p-2 md:grid-cols-2">
             <TabsTrigger value="query">Query</TabsTrigger>
             <TabsTrigger value="execute">Execute</TabsTrigger>
           </TabsList>
-          <TabsContent value="query">
+          <TabsContent value="query" className="mt-5">
             <QueryContract />
           </TabsContent>
-          <TabsContent value="execute">
+          <TabsContent value="execute" className="mt-5">
             <ExecuteContract />
           </TabsContent>
         </Tabs>
