@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { NodeStatusInterface } from '@/lib/types/node-status.interface'
 import StatusBar from './status-bar'
-import { ChevronDown } from 'lucide-react'
 
 interface Props {
   title: string
@@ -28,8 +27,8 @@ export default function StatusCard({
       : 'Retrying'
 
   return (
-    <Card className="overflow-hidden border-border/80 bg-card/95">
-      <CardHeader className="gap-4 border-b border-border/70 bg-secondary/35">
+    <Card className="surface-motion overflow-hidden border-border/80 bg-card/[0.92]">
+      <CardHeader className="gap-5 border-b border-border/70 bg-secondary/[0.18] p-5 md:p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -54,11 +53,13 @@ export default function StatusCard({
           </p>
         </div>
       </CardHeader>
-      <CardContent className="pt-6">
-        <details className="group rounded-[calc(var(--radius)-0.2rem)] border border-border bg-background/70 p-4">
+      <CardContent className="p-5 md:p-6">
+        <details className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-background/70 p-4 md:p-5">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium text-foreground">
             View endpoint details
-            <ChevronDown className="size-4 text-muted-foreground transition-transform group-open:rotate-180" />
+            <span className="text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground">
+              Open
+            </span>
           </summary>
           <div className="mt-4 space-y-3">
             <p className="break-all text-xs leading-5 text-muted-foreground">

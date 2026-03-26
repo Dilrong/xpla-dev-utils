@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/card'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { Clock } from 'lucide-react'
 
 dayjs.extend(utc)
 
@@ -42,10 +41,7 @@ const EpochConvert = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Clock className="size-5" />
-          Epoch Time Converter
-        </CardTitle>
+        <CardTitle>Epoch Time Converter</CardTitle>
         <CardDescription>
           Convert Unix epoch timestamps to human-readable dates
         </CardDescription>

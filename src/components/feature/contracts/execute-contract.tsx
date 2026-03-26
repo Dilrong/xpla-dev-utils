@@ -19,7 +19,6 @@ import { useToast } from '@/components/ui/use-toast'
 import { useConfigStore } from '@/lib/store/config-store'
 import { useContractStore } from '@/lib/store/contract-store'
 import { useConnectedWallet } from '@xpla/wallet-provider'
-import { Loader2, Play, Copy, CheckCircle, Zap } from 'lucide-react'
 import { MsgExecuteContract, Coin } from '@xpla/xpla.js'
 import axios from 'axios'
 import {
@@ -160,7 +159,7 @@ const ExecuteContract = () => {
 
       if (txConfirmed) {
         toast({
-          title: 'Transaction confirmed! 🎉',
+          title: 'Transaction confirmed',
           description: 'Your contract execution was successful.',
           action: (
             <Button
@@ -270,10 +269,7 @@ const ExecuteContract = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="size-5" />
-            Contract Execute
-          </CardTitle>
+          <CardTitle>Contract Execute</CardTitle>
           <CardDescription>
             Execute smart contract functions. The message will be automatically
             converted to base64.
@@ -311,17 +307,7 @@ const ExecuteContract = () => {
                   onClick={copyToClipboard}
                   className="h-7"
                 >
-                  {copied ? (
-                    <>
-                      <CheckCircle className="mr-1 size-3 text-green-500" />
-                      Copied
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="mr-1 size-3" />
-                      Copy
-                    </>
-                  )}
+                  {copied ? 'Copied' : 'Copy'}
                 </Button>
               </div>
               <Textarea
@@ -423,17 +409,7 @@ const ExecuteContract = () => {
               className="w-full"
               disabled={isLoading || !address || !connectedWallet}
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Executing...
-                </>
-              ) : (
-                <>
-                  <Play className="mr-2 size-4" />
-                  Execute Contract
-                </>
-              )}
+              {isLoading ? 'Executing...' : 'Execute contract'}
             </Button>
           </form>
         </CardContent>

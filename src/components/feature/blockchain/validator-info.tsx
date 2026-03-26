@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowUpRight, Loader2, Search, Shield } from 'lucide-react'
 
 interface Validator {
   operator_address: string
@@ -194,10 +193,7 @@ export function ValidatorInfo() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="size-5" />
-            Search Validator
-          </CardTitle>
+          <CardTitle>Search Validator</CardTitle>
           <CardDescription>
             Search for a validator operator address and inspect the most useful
             staking fields first.
@@ -218,17 +214,7 @@ export function ValidatorInfo() {
               />
             </div>
             <Button onClick={searchValidator} disabled={isSearching}>
-              {isSearching ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Searching
-                </>
-              ) : (
-                <>
-                  <Search className="mr-2 size-4" />
-                  Search
-                </>
-              )}
+              {isSearching ? 'Searching...' : 'Search'}
             </Button>
           </div>
         </CardContent>
@@ -237,10 +223,7 @@ export function ValidatorInfo() {
       {searchedValidator && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="size-5" />
-              Validator Summary
-            </CardTitle>
+            <CardTitle>Validator Summary</CardTitle>
             <CardDescription>
               Show the core staking fields first and keep the rest collapsed.
             </CardDescription>
@@ -298,7 +281,7 @@ export function ValidatorInfo() {
                     size="sm"
                     onClick={() => openExplorer(searchedValidator.operator_address)}
                   >
-                    <ArrowUpRight className="size-4" />
+                    View
                   </Button>
                 </div>
               </div>
@@ -307,11 +290,9 @@ export function ValidatorInfo() {
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-medium text-foreground">
-                      View validator details
+                      Validator details
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      Website, shares, security, and unbonding data
-                    </p>
+                    <p className="text-xs text-muted-foreground">Open</p>
                   </div>
                 </summary>
                 <div className="grid gap-3 border-t border-border p-4 md:grid-cols-2">
@@ -401,18 +382,15 @@ export function ValidatorInfo() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="size-5" />
-            Active Validators
-          </CardTitle>
+          <CardTitle>Active Validators</CardTitle>
           <CardDescription>
             Network-wide validator counts first, with the loaded list collapsed.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="size-6 animate-spin" />
+            <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+              Loading validators...
             </div>
           ) : (
             <div className="space-y-4">

@@ -28,7 +28,6 @@ import { useConfigStore } from '@/lib/store/config-store'
 import { useConnectedWallet } from '@xpla/wallet-provider'
 import { makeMsgCw721Instantiate, cw721CodeId } from '@/lib/xpla/contract/cw721'
 import { Cw721InstantiateMsg } from '@/lib/xpla/interface/cw721.interface'
-import { Loader2, Image as ImageIcon } from 'lucide-react'
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -128,7 +127,7 @@ export function MintCw721() {
 
       if (txConfirmed) {
         toast({
-          title: `NFT Collection "${values.name}" created successfully! 🎉`,
+          title: `NFT Collection "${values.name}" created successfully`,
           description:
             'Your CW721 NFT contract has been deployed to the blockchain.',
           action: (
@@ -199,10 +198,7 @@ export function MintCw721() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ImageIcon className="size-5" />
-          Create CW-721 NFT Contract
-        </CardTitle>
+        <CardTitle>Create CW-721 NFT Contract</CardTitle>
         <CardDescription>
           Deploy a new CW-721 NFT contract on XPLA blockchain.
         </CardDescription>
@@ -243,14 +239,9 @@ export function MintCw721() {
             />
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Creating NFT Contract...
-                </>
-              ) : (
-                'Create CW-721 NFT Contract'
-              )}
+              {isLoading
+                ? 'Creating NFT contract...'
+                : 'Create CW-721 NFT Contract'}
             </Button>
           </form>
         </Form>

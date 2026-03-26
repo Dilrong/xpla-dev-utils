@@ -27,7 +27,6 @@ import { useToast } from '@/components/ui/use-toast'
 import { useConfigStore } from '@/lib/store/config-store'
 import { makeMsgErc20Instantiate, erc20CodeId } from '@/lib/xpla/contract/erc20'
 import { useConnectedWallet } from '@xpla/wallet-provider'
-import { Coins, Loader2 } from 'lucide-react'
 import { Erc20InstantiateMsg } from '@/lib/xpla/interface/erc20.interface'
 
 const formSchema = z.object({
@@ -141,7 +140,7 @@ const MintErc20 = () => {
 
       if (txConfirmed) {
         toast({
-          title: 'Token created successfully! 🎉',
+          title: 'Token created successfully',
           description: 'Your ERC20 token has been deployed to the blockchain.',
           action: (
             <Button
@@ -211,10 +210,7 @@ const MintErc20 = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Coins className="size-5" />
-          Create ERC-20 Token
-        </CardTitle>
+        <CardTitle>Create ERC-20 Token</CardTitle>
         <CardDescription>
           Deploy a new ERC-20 token contract on XPLA blockchain.
         </CardDescription>
@@ -305,14 +301,7 @@ const MintErc20 = () => {
             />
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Creating Token...
-                </>
-              ) : (
-                'Create ERC-20 Token'
-              )}
+              {isLoading ? 'Creating token...' : 'Create ERC-20 Token'}
             </Button>
           </form>
         </Form>

@@ -1,13 +1,6 @@
 'use client'
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  Database,
-  LoaderCircle,
-  RefreshCcw,
-  Search,
-  Wallet,
-} from 'lucide-react'
 import { useConfigStore } from '@/lib/store/config-store'
 import {
   decodeBech32Address,
@@ -285,10 +278,7 @@ export default function AccountInspector() {
     <div className="space-y-4">
       <Card className="border-border/70 bg-card/80">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wallet className="size-5" />
-            Account Inspector
-          </CardTitle>
+          <CardTitle>Account Inspector</CardTitle>
           <CardDescription>
             Pull auth, bank, staking, and rewards data for any XPLA bech32
             address from the currently selected LCD endpoint.
@@ -309,12 +299,7 @@ export default function AccountInspector() {
             />
             <div className="flex gap-2">
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? (
-                  <LoaderCircle className="mr-2 size-4 animate-spin" />
-                ) : (
-                  <Search className="mr-2 size-4" />
-                )}
-                Inspect
+                {isLoading ? 'Inspecting...' : 'Inspect'}
               </Button>
               <Button
                 type="button"
@@ -322,7 +307,6 @@ export default function AccountInspector() {
                 disabled={!queryAddress || isLoading}
                 onClick={() => setRefreshToken((current) => current + 1)}
               >
-                <RefreshCcw className="mr-2 size-4" />
                 Refresh
               </Button>
             </div>
@@ -510,8 +494,7 @@ export default function AccountInspector() {
                       className="overflow-hidden rounded-2xl border border-border/60 bg-card"
                     >
                       <div className="border-b border-border/60 px-4 py-3">
-                        <p className="flex items-center gap-2 text-sm font-medium text-foreground">
-                          <Database className="size-4" />
+                        <p className="text-sm font-medium text-foreground">
                           {key}
                         </p>
                       </div>

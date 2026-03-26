@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Copy, Fingerprint, Waypoints } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -44,7 +43,6 @@ function OutputRow({
           className="shrink-0"
           onClick={() => onCopy(value)}
         >
-          <Copy className="mr-2 size-4" />
           Copy
         </Button>
       </div>
@@ -79,10 +77,7 @@ export default function AddressLab() {
     <div className="space-y-4">
       <Card className="border-border/70 bg-card/80">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Waypoints className="size-5" />
-            Address Lab
-          </CardTitle>
+          <CardTitle>Address Lab</CardTitle>
           <CardDescription>
             Flip one bech32 payload across account, validator operator, and
             validator consensus prefixes without leaving the page.
@@ -135,10 +130,7 @@ export default function AddressLab() {
 
               <Card className="border-border/70 bg-background/70">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-base">
-                    <Fingerprint className="size-4" />
-                    Payload details
-                  </CardTitle>
+                  <CardTitle className="text-base">Payload details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm text-muted-foreground">
                   <div>

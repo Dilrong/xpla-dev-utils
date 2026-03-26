@@ -1,13 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import {
-  Gauge,
-  LoaderCircle,
-  RefreshCcw,
-  ShieldAlert,
-  Vote,
-} from 'lucide-react'
 import { useConfigStore } from '@/lib/store/config-store'
 import { formatDuration, normalizeUrl } from '@/lib/utils'
 import {
@@ -204,10 +197,7 @@ export default function ChainOverview() {
       <Card className="border-border/70 bg-card/80">
         <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <Gauge className="size-5" />
-              Chain Overview
-            </CardTitle>
+            <CardTitle>Chain Overview</CardTitle>
             <CardDescription className="mt-2">
               Surface the chain ID, staking boundaries, slashing thresholds, and
               current governance window from one screen.
@@ -219,12 +209,7 @@ export default function ChainOverview() {
             onClick={refresh}
             disabled={isLoading}
           >
-            {isLoading ? (
-              <LoaderCircle className="mr-2 size-4 animate-spin" />
-            ) : (
-              <RefreshCcw className="mr-2 size-4" />
-            )}
-            Refresh
+            {isLoading ? 'Refreshing...' : 'Refresh'}
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -298,10 +283,7 @@ export default function ChainOverview() {
               <div className="grid gap-4 xl:grid-cols-2">
                 <Card className="border-border/70 bg-background/70">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <ShieldAlert className="size-4" />
-                      Slashing parameters
-                    </CardTitle>
+                    <CardTitle className="text-base">Slashing parameters</CardTitle>
                   </CardHeader>
                   <CardContent className="grid gap-3 md:grid-cols-2">
                     <div className="rounded-2xl border border-border/60 px-4 py-3">
@@ -355,8 +337,7 @@ export default function ChainOverview() {
 
                 <Card className="border-border/70 bg-background/70">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Vote className="size-4" />
+                    <CardTitle className="text-base">
                       Governance parameters
                     </CardTitle>
                   </CardHeader>

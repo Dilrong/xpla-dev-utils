@@ -34,37 +34,32 @@ const Footer = () => {
   }, [getLatestBlock])
 
   return (
-    <footer className="border-t border-border bg-card/80">
-      <div className="container flex max-w-screen-2xl flex-col gap-5 py-8 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-3">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            Chain footer
+    <footer className="border-t border-border/70 bg-background/85">
+      <div className="container flex max-w-screen-2xl flex-col gap-6 py-10 md:flex-row md:items-end md:justify-between">
+        <div className="space-y-3.5">
+          <p className="text-[0.62rem] uppercase tracking-[0.28em] text-muted-foreground">
+            Live chain snapshot
           </p>
           <a
             href={`${explorer}block/${height}`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-primary/10 hover:text-primary"
+            className="underline-motion inline-flex items-center gap-3 py-1 text-sm tracking-[-0.02em] text-foreground transition-colors hover:text-foreground/[0.76]"
           >
-            {status ? (
-              <span className="flex size-2.5 animate-pulse rounded-full bg-emerald-500" />
-            ) : (
-              <span className="flex size-2.5 animate-pulse rounded-full bg-rose-500" />
-            )}
             {status
               ? `${formatWithCommas(height)} on ${network}`
               : `Endpoint offline on ${network}`}
           </a>
         </div>
-        <div className="flex flex-col gap-2 text-sm text-muted-foreground md:items-end">
+        <div className="flex flex-col gap-2.5 text-sm text-muted-foreground md:items-end">
           <p className="max-w-md leading-6">
-            Built as a calm operational surface for day-to-day XPLA development.
+            Built as a quieter operating surface for day-to-day XPLA work.
           </p>
           <Link
             href="https://github.com/Dilrong/xpla-dev-utils/issues"
             target="_blank"
             rel="noreferrer"
-            className="font-medium text-foreground transition-colors hover:text-primary"
+            className="underline-motion font-medium text-foreground transition-colors hover:text-foreground/[0.76]"
           >
             Report an issue on GitHub
           </Link>

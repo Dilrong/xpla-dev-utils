@@ -6,21 +6,27 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { MoonIcon, SunIcon } from 'lucide-react'
 
 const ModeToggle = () => {
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
+  const currentLabel =
+    theme === 'light' ? 'Light' : theme === 'dark' ? 'Dark' : 'System'
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="w-9 px-0">
-          <SunIcon className="size-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <MoonIcon className="absolute size-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-10 rounded-full border border-transparent px-4 text-[0.62rem] uppercase tracking-[0.22em] text-foreground/[0.72] hover:border-border hover:bg-card hover:text-foreground"
+        >
+          {currentLabel}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="rounded-[1.2rem] border border-border/70 bg-card/95 p-1"
+      >
         <DropdownMenuItem onClick={() => setTheme('light')}>
           Light
         </DropdownMenuItem>

@@ -10,7 +10,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { ChangeEvent, useState } from 'react'
-import { Coins } from 'lucide-react'
 
 const MICRO_XPLA = 1_000_000
 
@@ -50,10 +49,7 @@ const XplaConvert = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Coins className="size-5" />
-          XPLA Unit Converter
-        </CardTitle>
+        <CardTitle>XPLA Unit Converter</CardTitle>
         <CardDescription>
           Convert between XPLA and aXPLA units. 1 XPLA equals 1,000,000 aXPLA.
         </CardDescription>

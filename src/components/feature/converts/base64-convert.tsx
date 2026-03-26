@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { base64ToBytes, bytesToBase64 } from '@/lib/utils'
-import { FileText } from 'lucide-react'
 
 const Base64Convert = () => {
   const [base64, setBase64] = useState('')
@@ -47,10 +46,7 @@ const Base64Convert = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="size-5" />
-          Base64 Converter
-        </CardTitle>
+        <CardTitle>Base64 Converter</CardTitle>
         <CardDescription>
           Convert between text and Base64 encoding
         </CardDescription>

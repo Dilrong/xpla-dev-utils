@@ -1,6 +1,5 @@
 'use client'
 
-import { Blocks, SearchCode, Waypoints } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import AccountInspector from '@/components/feature/cosmos/account-inspector'
 import AddressLab from '@/components/feature/cosmos/address-lab'
@@ -10,16 +9,13 @@ export default function CosmosTools() {
   return (
     <Tabs defaultValue="account" className="w-full">
       <TabsList className="grid h-auto w-full grid-cols-1 gap-2 rounded-xl border border-border bg-card p-2 md:grid-cols-3">
-        <TabsTrigger value="account" className="gap-2 px-4 py-3">
-          <SearchCode className="size-4" />
+        <TabsTrigger value="account" className="px-4 py-3">
           Account Inspector
         </TabsTrigger>
-        <TabsTrigger value="address" className="gap-2 px-4 py-3">
-          <Waypoints className="size-4" />
+        <TabsTrigger value="address" className="px-4 py-3">
           Address Lab
         </TabsTrigger>
-        <TabsTrigger value="chain" className="gap-2 px-4 py-3">
-          <Blocks className="size-4" />
+        <TabsTrigger value="chain" className="px-4 py-3">
           Chain Overview
         </TabsTrigger>
       </TabsList>

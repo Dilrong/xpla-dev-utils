@@ -63,7 +63,6 @@ export default function RootLayout({
           <WalletInitializer>
             <TooltipProvider>
               <div className="relative flex min-h-screen flex-col">
-                <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 bg-[linear-gradient(180deg,hsl(var(--primary)/0.12),transparent)]" />
                 <Header />
                 <main className="flex-1">{children}</main>
                 <Footer />

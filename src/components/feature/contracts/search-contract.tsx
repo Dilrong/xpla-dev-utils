@@ -34,14 +34,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { summarizeAddress } from '@/lib/utils'
-import {
-  ArrowUpRight,
-  Loader2,
-  Search,
-  Star,
-  StarOff,
-  Workflow,
-} from 'lucide-react'
 
 function formatHistoryMessage(message: unknown) {
   if (message === null || message === undefined) {
@@ -210,10 +202,7 @@ const SearchContract = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Search className="size-5" />
-          Contract address
-        </CardTitle>
+        <CardTitle>Contract address</CardTitle>
         <CardDescription>
           Load a live CosmWasm contract once, then reuse the selected address in
           the query and execute tabs below.
@@ -233,13 +222,7 @@ const SearchContract = () => {
                 size="sm"
                 onClick={handleToggleFavorite}
                 disabled={!address}
-                className="gap-2"
               >
-                {isFavorite ? (
-                  <StarOff className="size-4" />
-                ) : (
-                  <Star className="size-4" />
-                )}
                 {isFavorite ? 'Unfavorite' : 'Favorite'}
               </Button>
               <StoreContract
@@ -263,17 +246,7 @@ const SearchContract = () => {
               className="font-mono"
             />
             <Button type="submit" disabled={isLoading} className="lg:w-40">
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Loading
-                </>
-              ) : (
-                <>
-                  <Search className="mr-2 size-4" />
-                  Search
-                </>
-              )}
+              {isLoading ? 'Loading...' : 'Search'}
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -323,10 +296,8 @@ const SearchContract = () => {
                 onClick={() =>
                   openExplorer(`${explorer}contract/${snapshot.address}`)
                 }
-                className="gap-2"
               >
-                Open Explorer
-                <ArrowUpRight className="size-4" />
+                Open explorer
               </Button>
             </div>
 
@@ -388,15 +359,10 @@ const SearchContract = () => {
             <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
               <summary className="cursor-pointer list-none px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <Workflow className="size-4 text-primary" />
-                    <p className="text-sm font-medium text-foreground">
-                      View contract details
-                    </p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Metadata and detected profile
+                  <p className="text-sm font-medium text-foreground">
+                    Contract details
                   </p>
+                  <p className="text-xs text-muted-foreground">Open</p>
                 </div>
               </summary>
               <div className="space-y-4 border-t border-border p-4">
@@ -437,12 +403,9 @@ const SearchContract = () => {
 
                 {profileSummary.length ? (
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Workflow className="size-4 text-primary" />
-                      <p className="text-sm font-medium text-foreground">
-                        Detected profile
-                      </p>
-                    </div>
+                    <p className="text-sm font-medium text-foreground">
+                      Detected profile
+                    </p>
                     <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                       {profileSummary.map((item) => (
                         <div
@@ -466,15 +429,10 @@ const SearchContract = () => {
             <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
               <summary className="cursor-pointer list-none px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <Workflow className="size-4 text-primary" />
-                    <p className="text-sm font-medium text-foreground">
-                      View contract history
-                    </p>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {snapshot.history.length.toLocaleString()} entries
-                  </span>
+                  <p className="text-sm font-medium text-foreground">
+                    Contract history
+                  </p>
+                  <span className="text-xs text-muted-foreground">Open</span>
                 </div>
               </summary>
               <div className="space-y-3 border-t border-border p-4">

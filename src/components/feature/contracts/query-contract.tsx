@@ -18,7 +18,6 @@ import {
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
-import { Loader2, Search, Copy, CheckCircle } from 'lucide-react'
 import {
   getContractFamilyLabel,
   getContractStandardLabel,
@@ -168,10 +167,7 @@ const QueryContract = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="size-5" />
-            Contract Query
-          </CardTitle>
+          <CardTitle>Contract Query</CardTitle>
           <CardDescription>
             Query smart contract state using JSON messages. The message will be
             automatically converted to base64.
@@ -265,17 +261,7 @@ const QueryContract = () => {
             onClick={handleSubmit}
             disabled={isLoading || !address}
           >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 size-4 animate-spin" />
-                Querying...
-              </>
-            ) : (
-              <>
-                <Search className="mr-2 size-4" />
-                Submit Query
-              </>
-            )}
+            {isLoading ? 'Querying...' : 'Submit query'}
           </Button>
         </CardContent>
       </Card>
@@ -299,17 +285,7 @@ const QueryContract = () => {
                 onClick={copyToClipboard}
                 className="h-8"
               >
-                {copied ? (
-                  <>
-                    <CheckCircle className="mr-2 size-4 text-green-500" />
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className="mr-2 size-4" />
-                    Copy
-                  </>
-                )}
+                {copied ? 'Copied' : 'Copy result'}
               </Button>
             </CardTitle>
           </CardHeader>

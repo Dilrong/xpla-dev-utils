@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowUpRight, Hash, Loader2, Search } from 'lucide-react'
 
 interface Block {
   block_id: {
@@ -124,10 +123,7 @@ export function BlockInfo() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="size-5" />
-            Search Block
-          </CardTitle>
+          <CardTitle>Search Block</CardTitle>
           <CardDescription>
             Search for a specific block by height. The result shows the key
             fields first and tucks the raw identifiers underneath.
@@ -149,17 +145,7 @@ export function BlockInfo() {
               />
             </div>
             <Button onClick={searchBlock} disabled={isSearching}>
-              {isSearching ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Searching
-                </>
-              ) : (
-                <>
-                  <Search className="mr-2 size-4" />
-                  Search
-                </>
-              )}
+              {isSearching ? 'Searching...' : 'Search'}
             </Button>
           </div>
 
@@ -207,7 +193,6 @@ export function BlockInfo() {
                       onClick={() => openExplorer(searchedBlock.block_id.hash)}
                     >
                       View
-                      <ArrowUpRight className="size-4" />
                     </Button>
                   </div>
                 </div>
@@ -217,11 +202,9 @@ export function BlockInfo() {
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-medium text-foreground">
-                      View block details
+                      Block details
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      Chain ID, full hashes, and block parts
-                    </p>
+                    <p className="text-xs text-muted-foreground">Open</p>
                   </div>
                 </summary>
                 <div className="grid gap-3 border-t border-border p-4 md:grid-cols-2">
@@ -269,10 +252,7 @@ export function BlockInfo() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Hash className="size-5" />
-            Latest Block
-          </CardTitle>
+          <CardTitle>Latest Block</CardTitle>
           <CardDescription>
             Current chain head reduced to a compact summary. Open details only
             if you need raw identifiers.
@@ -280,8 +260,8 @@ export function BlockInfo() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="size-6 animate-spin" />
+            <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+              Loading latest block...
             </div>
           ) : latestBlock ? (
             <div className="space-y-4">
@@ -324,11 +304,9 @@ export function BlockInfo() {
                 <summary className="cursor-pointer list-none px-4 py-3">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-medium text-foreground">
-                      View latest block details
+                      Latest block details
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      Full hash, proposer, and explorer link
-                    </p>
+                    <p className="text-xs text-muted-foreground">Open</p>
                   </div>
                 </summary>
                 <div className="space-y-4 border-t border-border p-4">
@@ -364,7 +342,6 @@ export function BlockInfo() {
                         onClick={() => openExplorer(latestBlock.block_id.hash)}
                       >
                         View
-                        <ArrowUpRight className="size-4" />
                       </Button>
                     </div>
                   </div>

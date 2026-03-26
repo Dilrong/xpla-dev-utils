@@ -13,7 +13,6 @@ import {
 import Image from 'next/image'
 import axios from 'axios'
 import { useConfigStore } from '@/lib/store/config-store'
-import { Link } from 'lucide-react'
 
 const IpfsConvert = () => {
   const { ipfs } = useConfigStore()
@@ -47,10 +46,7 @@ const IpfsConvert = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Link className="size-5" />
-          IPFS Gateway Converter
-        </CardTitle>
+        <CardTitle>IPFS Gateway Converter</CardTitle>
         <CardDescription>
           Convert IPFS hashes to HTTP URLs using IPFS gateway
         </CardDescription>

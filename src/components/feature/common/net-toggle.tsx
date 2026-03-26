@@ -5,7 +5,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { WaypointsIcon, FlaskConicalIcon } from 'lucide-react'
 import { useConfigStore } from '@/lib/store/config-store'
 import { Network } from '@/lib/config/block-chain'
 
@@ -19,16 +18,18 @@ const NetToggle = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="w-9 px-0">
-          {network === Network.mainnet ? (
-            <WaypointsIcon className="size-[1.2rem] rotate-0 scale-100 transition-all" />
-          ) : (
-            <FlaskConicalIcon className="size-[1.2rem] rotate-0 scale-100 transition-all" />
-          )}
-          <span className="sr-only">Toggle Net</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-10 rounded-full border border-transparent px-4 text-[0.62rem] uppercase tracking-[0.22em] text-foreground/[0.72] hover:border-border hover:bg-card hover:text-foreground"
+        >
+          {network === Network.mainnet ? 'Mainnet' : 'Testnet'}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="rounded-[1.2rem] border border-border/70 bg-card/95 p-1"
+      >
         <DropdownMenuItem onClick={() => toggleNet(Network.mainnet)}>
           Mainnet
         </DropdownMenuItem>

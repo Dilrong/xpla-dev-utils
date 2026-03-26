@@ -4,65 +4,65 @@
 
 @layer base {
   :root {
-    --background: 206 28% 96%;
-    --foreground: 213 28% 13%;
+    --background: 210 24% 97%;
+    --foreground: 220 18% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 213 28% 13%;
+    --card-foreground: 220 18% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 213 28% 13%;
+    --popover-foreground: 220 18% 10%;
 
-    --primary: 192 82% 31%;
+    --primary: 214 100% 48%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 206 26% 93%;
-    --secondary-foreground: 213 28% 15%;
+    --secondary: 210 20% 95%;
+    --secondary-foreground: 220 18% 12%;
 
-    --muted: 206 24% 94%;
-    --muted-foreground: 211 17% 41%;
+    --muted: 210 18% 95%;
+    --muted-foreground: 215 11% 43%;
 
-    --accent: 191 58% 90%;
-    --accent-foreground: 194 82% 20%;
+    --accent: 214 94% 95%;
+    --accent-foreground: 214 84% 32%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 211 27% 85%;
-    --input: 211 27% 85%;
-    --ring: 192 82% 31%;
+    --border: 214 18% 87%;
+    --input: 214 18% 87%;
+    --ring: 214 100% 48%;
 
-    --radius: 0.85rem;
+    --radius: 1.05rem;
   }
 
   .dark {
-    --background: 209 37% 8%;
-    --foreground: 208 23% 93%;
+    --background: 222 24% 8%;
+    --foreground: 210 20% 92%;
 
-    --card: 210 34% 10%;
-    --card-foreground: 208 23% 93%;
+    --card: 223 21% 10%;
+    --card-foreground: 210 20% 92%;
 
-    --popover: 210 34% 10%;
-    --popover-foreground: 208 23% 93%;
+    --popover: 223 21% 10%;
+    --popover-foreground: 210 20% 92%;
 
-    --primary: 189 67% 57%;
-    --primary-foreground: 210 34% 10%;
+    --primary: 212 100% 66%;
+    --primary-foreground: 222 24% 8%;
 
-    --secondary: 209 28% 16%;
-    --secondary-foreground: 208 23% 93%;
+    --secondary: 222 16% 15%;
+    --secondary-foreground: 210 20% 92%;
 
-    --muted: 210 27% 14%;
-    --muted-foreground: 211 18% 67%;
+    --muted: 223 18% 14%;
+    --muted-foreground: 214 12% 68%;
 
-    --accent: 194 50% 16%;
-    --accent-foreground: 189 67% 78%;
+    --accent: 217 34% 18%;
+    --accent-foreground: 212 100% 76%;
 
     --destructive: 0 63% 40%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 209 28% 24%;
-    --input: 209 28% 24%;
-    --ring: 189 67% 57%;
+    --border: 222 15% 23%;
+    --input: 222 15% 23%;
+    --ring: 212 100% 66%;
   }
 }
 
@@ -80,29 +80,21 @@
   }
 
   body {
-    font-family: 'Aptos', 'Segoe UI Variable', 'Noto Sans KR',
-      'Apple SD Gothic Neo', sans-serif;
-    background-image: radial-gradient(
-        circle at top,
-        hsl(var(--primary) / 0.12),
-        transparent 32%
+    font-family: 'Aptos', 'SF Pro Display', 'SF Pro Text',
+      'Segoe UI Variable', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    background-image:
+      radial-gradient(
+        circle at top left,
+        hsl(var(--primary) / 0.1),
+        transparent 34%
       ),
-      linear-gradient(
-        to right,
-        hsl(var(--foreground) / 0.04) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        to bottom,
-        hsl(var(--foreground) / 0.04) 1px,
-        transparent 1px
+      radial-gradient(
+        circle at top right,
+        hsl(var(--foreground) / 0.04),
+        transparent 28%
       ),
       linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
-    background-size:
-      100% 100%,
-      28px 28px,
-      28px 28px,
-      100% 100%;
+    background-attachment: fixed;
     @apply bg-background text-foreground;
   }
 
@@ -110,10 +102,10 @@
   h2,
   h3,
   h4 {
-    font-family: 'Aptos', 'Segoe UI Variable', 'Noto Sans KR',
-      'Apple SD Gothic Neo', sans-serif;
-    font-weight: 650;
-    letter-spacing: -0.04em;
+    font-family: 'Aptos', 'SF Pro Display', 'SF Pro Text',
+      'Segoe UI Variable', 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.055em;
   }
 
   button,
@@ -132,5 +124,91 @@
   .font-mono {
     font-family: 'IBM Plex Mono', 'SFMono-Regular', 'Menlo', 'Consolas',
       monospace;
+  }
+}
+
+@layer components {
+  .surface-motion {
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.25s ease,
+      background-color 0.25s ease;
+  }
+
+  .surface-motion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 28px 64px -46px hsl(var(--foreground) / 0.26);
+  }
+
+  .underline-motion {
+    position: relative;
+  }
+
+  .underline-motion::after {
+    position: absolute;
+    right: 0;
+    bottom: -0.1rem;
+    left: 0;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    background: hsl(var(--foreground) / 0.78);
+    content: '';
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .underline-motion:hover::after,
+  .underline-motion[data-active='true']::after {
+    transform: scaleX(1);
+  }
+
+  .type-reveal {
+    opacity: 0;
+    animation: type-rise 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .reveal-2 {
+    animation-delay: 0.08s;
+  }
+
+  .reveal-3 {
+    animation-delay: 0.16s;
+  }
+
+  .reveal-4 {
+    animation-delay: 0.24s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface-motion {
+    transition: none;
+  }
+
+  .surface-motion:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .underline-motion::after {
+    transition: none;
+  }
+
+  .type-reveal {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+@keyframes type-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

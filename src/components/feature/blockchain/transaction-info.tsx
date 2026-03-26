@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ArrowUpRight, Hash, Loader2, Search } from 'lucide-react'
 
 interface Transaction {
   tx_response: {
@@ -111,10 +110,7 @@ export function TransactionInfo() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="size-5" />
-            Search Transaction
-          </CardTitle>
+          <CardTitle>Search Transaction</CardTitle>
           <CardDescription>
             Look up a transaction hash and keep the raw messages and logs out of
             the way until you need them.
@@ -135,17 +131,7 @@ export function TransactionInfo() {
               />
             </div>
             <Button onClick={searchTransaction} disabled={isSearching}>
-              {isSearching ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Searching
-                </>
-              ) : (
-                <>
-                  <Search className="mr-2 size-4" />
-                  Search
-                </>
-              )}
+              {isSearching ? 'Searching...' : 'Search'}
             </Button>
           </div>
         </CardContent>
@@ -154,10 +140,7 @@ export function TransactionInfo() {
       {transaction && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Hash className="size-5" />
-              Transaction Summary
-            </CardTitle>
+            <CardTitle>Transaction Summary</CardTitle>
             <CardDescription>
               Status first, raw payloads and logs only when you expand them.
             </CardDescription>
@@ -169,26 +152,15 @@ export function TransactionInfo() {
                   <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Status
                   </Label>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`size-3 rounded-full ${
-                        transaction.tx_response.code === 0
-                          ? 'bg-green-500'
-                          : 'bg-red-500'
-                      }`}
-                    />
-                    <span
-                      className={
-                        transaction.tx_response.code === 0
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      }
-                    >
-                      {transaction.tx_response.code === 0
-                        ? 'Success'
-                        : 'Failed'}
-                    </span>
-                  </div>
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                      transaction.tx_response.code === 0
+                        ? 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300'
+                        : 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300'
+                    }`}
+                  >
+                    {transaction.tx_response.code === 0 ? 'Success' : 'Failed'}
+                  </span>
                 </div>
                 <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
                   <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -238,7 +210,7 @@ export function TransactionInfo() {
                     size="sm"
                     onClick={() => openExplorer(transaction.tx_response.txhash)}
                   >
-                    <ArrowUpRight className="size-4" />
+                    View
                   </Button>
                 </div>
               </div>

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { EllipsisIcon, Star, X } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import {
   DropdownMenu,
@@ -61,7 +60,9 @@ function AddressSection({
                 >
                   <div className="flex items-center gap-2">
                     {highlightFavorites ? (
-                      <Star className="size-3 text-primary" />
+                      <span className="text-[0.58rem] uppercase tracking-[0.22em] text-primary">
+                        Pinned
+                      </span>
                     ) : null}
                     <p className="truncate text-sm font-medium text-foreground">
                       {summarizeAddress(address, 10, 8)}
@@ -76,9 +77,9 @@ function AddressSection({
                   variant="ghost"
                   size="sm"
                   onClick={() => onRemoveAddress(address)}
-                  className="size-7 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                  className="h-7 px-2 text-[0.58rem] uppercase tracking-[0.18em] hover:bg-destructive hover:text-destructive-foreground"
                 >
-                  <X className="size-3" />
+                  Remove
                 </Button>
               </div>
             )
@@ -142,7 +143,6 @@ const StoreContract = ({ currentAddress, onSelectAddress }: Props) => {
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
-          <EllipsisIcon className="size-4" />
           Saved
         </Button>
       </DropdownMenuTrigger>

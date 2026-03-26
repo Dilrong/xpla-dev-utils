@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronDown } from 'lucide-react'
 
 function isActivePath(pathname: string, href?: string) {
   if (!href) {
@@ -31,27 +30,25 @@ const MainNav = () => {
   const pathname = usePathname()
 
   return (
-    <div className="hidden min-w-0 items-center gap-6 md:flex">
-      <Link href="/" className="flex min-w-fit items-center gap-4">
-        <div className="flex size-10 items-center justify-center rounded-[calc(var(--radius)-0.15rem)] bg-primary text-sm font-semibold text-primary-foreground shadow-sm">
-          X
-        </div>
-        <div className="space-y-1">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            XPLA DEV
-          </p>
-          <p className="text-xl leading-none text-foreground">Utils</p>
-        </div>
+    <div className="hidden min-w-0 items-center gap-12 md:flex">
+      <Link href="/" className="min-w-fit transition-opacity hover:opacity-75">
+        <p className="text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground">
+          XPLA developer utilities
+        </p>
+        <p className="mt-1 text-[1.7rem] leading-none tracking-[-0.08em] text-foreground">
+          XPLA Dev Utils
+        </p>
       </Link>
-      <nav className="flex flex-wrap items-center gap-2 text-sm">
+      <nav className="flex flex-wrap items-center gap-7">
         <Link
           href={menuConfig.overview.href || '/'}
           className={cn(
-            'rounded-full border border-transparent px-3 py-2 text-sm font-medium transition-colors',
+            'underline-motion py-1 text-[15px] tracking-[-0.02em]',
             isActivePath(pathname, menuConfig.overview.href)
-              ? 'border-primary/20 bg-primary/10 text-primary'
-              : 'text-foreground/70 hover:border-border hover:bg-card hover:text-foreground',
+              ? 'text-foreground'
+              : 'text-foreground/58 hover:text-foreground',
           )}
+          data-active={isActivePath(pathname, menuConfig.overview.href)}
         >
           {menuConfig.overview.title}
         </Link>
@@ -66,22 +63,27 @@ const MainNav = () => {
                 <Button
                   variant="ghost"
                   className={cn(
-                    'h-auto rounded-full border px-3 py-2 text-sm font-medium',
+                    'h-auto border-0 px-0 py-1.5 text-[15px] tracking-[-0.02em] shadow-none hover:bg-transparent',
                     isActive
-                      ? 'border-primary/20 bg-primary/10 text-primary hover:bg-primary/10'
-                      : 'border-transparent text-foreground/70 hover:border-border hover:bg-card hover:text-foreground',
+                      ? 'text-foreground'
+                      : 'text-foreground/58 hover:text-foreground',
                   )}
                 >
                   {group.title}
-                  <ChevronDown className="ml-2 size-4" />
+                  <span className="ml-2 text-[0.58rem] uppercase tracking-[0.24em] text-muted-foreground">
+                    Browse
+                  </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-80 p-2">
-                <DropdownMenuLabel className="space-y-1 px-3 py-2">
-                  <p className="text-sm font-semibold text-foreground">
+              <DropdownMenuContent
+                align="start"
+                className="w-[21rem] rounded-3xl border border-border/70 bg-card/95 p-2.5 shadow-[0_24px_60px_-40px_hsl(var(--foreground)/0.35)]"
+              >
+                <DropdownMenuLabel className="space-y-1.5 p-4">
+                  <p className="text-sm tracking-[-0.02em] text-foreground">
                     {group.title}
                   </p>
-                  <p className="text-xs font-normal leading-5 text-muted-foreground">
+                  <p className="text-xs leading-5 text-muted-foreground">
                     {group.description}
                   </p>
                 </DropdownMenuLabel>
@@ -90,13 +92,13 @@ const MainNav = () => {
                   <DropdownMenuItem
                     key={item.href}
                     asChild
-                    className="rounded-[calc(var(--radius)-0.2rem)] p-3"
+                    className="rounded-2xl p-4"
                   >
                     <Link
                       href={item.href || group.href}
-                      className="flex flex-col items-start gap-1"
+                      className="flex flex-col items-start gap-1.5"
                     >
-                      <span className="text-sm font-medium text-foreground">
+                      <span className="text-sm tracking-[-0.02em] text-foreground">
                         {item.title}
                       </span>
                       {item.description ? (
