@@ -54,21 +54,21 @@ const MobileNav = () => {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="border-r-2 border-foreground bg-background/95 pr-0"
+        className="border-r border-border bg-background/95 pr-0"
       >
         <MobileLink
           href="/"
           className="flex items-center gap-3"
           onOpenChange={setOpen}
         >
-          <div className="flex size-10 items-center justify-center border-2 border-foreground bg-foreground font-semibold text-background">
+          <div className="flex size-10 items-center justify-center rounded-[calc(var(--radius)-0.15rem)] bg-primary font-semibold text-primary-foreground">
             X
           </div>
           <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
               XPLA DEV
             </p>
-            <p className="text-2xl leading-none">Utils</p>
+            <p className="text-xl leading-none">Utils</p>
           </div>
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
@@ -79,10 +79,10 @@ const MobileNav = () => {
                 href={`${nav.href}`}
                 onOpenChange={setOpen}
                 className={cn(
-                  'border px-4 py-3 transition-colors',
+                  'rounded-[calc(var(--radius)-0.2rem)] border px-4 py-3 transition-colors',
                   pathname === nav.href
-                    ? 'border-foreground bg-foreground text-background'
-                    : 'border-transparent hover:border-foreground hover:bg-background',
+                    ? 'border-primary/20 bg-primary/10 text-primary'
+                    : 'border-transparent hover:border-border hover:bg-card',
                 )}
               >
                 <div className="space-y-1">

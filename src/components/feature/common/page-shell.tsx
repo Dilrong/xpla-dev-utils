@@ -17,11 +17,11 @@ export function PageShell({ children, className }: PageShellProps) {
   return (
     <div
       className={cn(
-        'container relative max-w-screen-2xl py-8 md:py-12',
+        'container relative max-w-screen-2xl py-8 md:py-10',
         className,
       )}
     >
-      <div className="space-y-10">{children}</div>
+      <div className="space-y-8">{children}</div>
     </div>
   )
 }
@@ -33,42 +33,44 @@ export function PageHero({
   actions,
 }: PageHeroProps) {
   return (
-    <section className="relative overflow-hidden border-2 border-foreground bg-card px-6 py-8 md:px-10 md:py-12">
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.03)_1px,transparent_1px)] [background-size:24px_24px]" />
+    <section className="relative overflow-hidden rounded-lg border bg-card p-6 shadow-sm md:p-8">
+      <div className="absolute inset-x-0 top-0 h-1 bg-primary/80" />
       <div
         className={cn(
-          'grid gap-8',
-          actions ? 'lg:grid-cols-[minmax(0,1.45fr)_minmax(0,0.55fr)]' : '',
+          'grid gap-6',
+          actions ? 'lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]' : '',
         )}
       >
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
             {eyebrow ? (
-              <p className="border border-foreground px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.34em] text-foreground">
+              <p className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
                 {eyebrow}
               </p>
             ) : null}
-            <div className="flex flex-1 items-center gap-3">
-              <div className="h-px flex-1 bg-foreground/20" />
-              <div className="size-3 border border-foreground bg-background" />
-            </div>
+            <div className="h-px flex-1 bg-border" />
           </div>
-          <div className="space-y-4">
-            <h1 className="max-w-5xl scroll-m-20 text-5xl leading-[0.92] text-foreground md:text-7xl xl:text-[5.6rem]">
+          <div className="space-y-3">
+            <h1 className="max-w-4xl scroll-m-20 text-4xl leading-tight text-foreground md:text-5xl xl:text-6xl">
               {title}
             </h1>
-            <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
+            <p className="max-w-3xl text-base leading-7 text-muted-foreground">
               {description}
             </p>
           </div>
         </div>
         {actions ? (
-          <div className="flex flex-col justify-end gap-4 border-t border-foreground/15 pt-5 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+          <div className="flex flex-col justify-between gap-4 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/45 p-4">
+            <div className="space-y-2">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                Quick actions
+              </p>
+              <p className="text-sm leading-6 text-muted-foreground">
+                Start with the one or two actions that move the task forward
+                first.
+              </p>
+            </div>
             <div className="flex flex-wrap gap-3">{actions}</div>
-            <p className="max-w-xs text-sm leading-6 text-muted-foreground">
-              Strong contrast, no decorative accent colors, and direct
-              utility-first actions for developers.
-            </p>
           </div>
         ) : null}
       </div>

@@ -34,17 +34,17 @@ const Footer = () => {
   }, [getLatestBlock])
 
   return (
-    <footer className="border-t-2 border-foreground bg-card">
+    <footer className="border-t border-border bg-card/80">
       <div className="container flex max-w-screen-2xl flex-col gap-5 py-8 md:flex-row md:items-end md:justify-between">
         <div className="space-y-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-muted-foreground">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             Chain footer
           </p>
           <a
             href={`${explorer}block/${height}`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 border-2 border-foreground bg-background px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-foreground transition-colors hover:bg-foreground hover:text-background"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-primary/10 hover:text-primary"
           >
             {status ? (
               <span className="flex size-2.5 animate-pulse rounded-full bg-emerald-500" />
@@ -58,14 +58,13 @@ const Footer = () => {
         </div>
         <div className="flex flex-col gap-2 text-sm text-muted-foreground md:items-end">
           <p className="max-w-md leading-6">
-            Built as a stark operational surface for day-to-day XPLA
-            development.
+            Built as a calm operational surface for day-to-day XPLA development.
           </p>
           <Link
             href="https://github.com/Dilrong/xpla-dev-utils/issues"
             target="_blank"
             rel="noreferrer"
-            className="font-semibold uppercase tracking-[0.14em] text-foreground transition-colors hover:opacity-70"
+            className="font-medium text-foreground transition-colors hover:text-primary"
           >
             Report an issue on GitHub
           </Link>
