@@ -71,7 +71,6 @@ const ExecuteContract = () => {
       return
     }
 
-    // 주소 형식 검증
     if (!isValidXplaAddress(address)) {
       toast({
         title: 'Invalid contract address',
@@ -84,11 +83,10 @@ const ExecuteContract = () => {
     try {
       setIsLoading(true)
 
-      // JSON 메시지 유효성 검증
       let parsedMessage
       try {
         parsedMessage = JSON.parse(data.executeMessage)
-      } catch (parseError) {
+      } catch {
         toast({
           title: 'Invalid JSON format',
           description: 'Please check your execute message format.',
@@ -97,7 +95,6 @@ const ExecuteContract = () => {
         return
       }
 
-      // Prepare funds if provided
       let funds = undefined
       if (data.funds && data.funds.trim()) {
         const fundsAmount = data.funds.trim()
@@ -112,7 +109,6 @@ const ExecuteContract = () => {
         funds = [new Coin('axpla', fundsAmount)]
       }
 
-      // Create MsgExecuteContract
       const executeMsg = new MsgExecuteContract(
         connectedWallet.walletAddress,
         address,
@@ -120,7 +116,6 @@ const ExecuteContract = () => {
         funds,
       )
 
-      // 트랜잭션 제출
       toast({
         title: 'Transaction submitted',
         description: 'Please wait while your transaction is being processed...',
@@ -132,20 +127,18 @@ const ExecuteContract = () => {
 
       const txHash = signTx.result.txhash
 
-      // 트랜잭션 처리 대기
       toast({
         title: 'Transaction submitted successfully',
         description: 'Waiting for transaction confirmation...',
       })
 
-      // 트랜잭션 상태 확인 (최대 30초 대기)
       let txConfirmed = false
       let attempts = 0
       const maxAttempts = 30
 
       while (!txConfirmed && attempts < maxAttempts) {
         try {
-          await new Promise((resolve) => setTimeout(resolve, 1000)) // 1초 대기
+          await new Promise((resolve) => setTimeout(resolve, 1000))
 
           const txResponse = await axios.get(
             `${lcd}/cosmos/tx/v1beta1/txs/${txHash}`,
@@ -160,9 +153,8 @@ const ExecuteContract = () => {
           }
 
           attempts++
-        } catch (error) {
+        } catch {
           attempts++
-          // 에러가 발생해도 계속 시도
         }
       }
 
@@ -184,7 +176,6 @@ const ExecuteContract = () => {
           ),
         })
       } else {
-        // 타임아웃 시에도 성공으로 처리 (트랜잭션이 제출되었으므로)
         toast({
           title: 'Transaction submitted',
           description:
@@ -204,7 +195,6 @@ const ExecuteContract = () => {
         })
       }
 
-      // Keep the detected live example in place after a successful execution.
       form.reset({
         funds: '',
         executeMessage: lastAutoMessageRef.current,
@@ -248,7 +238,7 @@ const ExecuteContract = () => {
         description: 'Execute message copied successfully.',
       })
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
+    } catch {
       toast({
         title: 'Copy failed',
         description: 'Failed to copy to clipboard.',
@@ -258,6 +248,7 @@ const ExecuteContract = () => {
   }
 
   const examples = useMemo(() => profile?.executeExamples ?? [], [profile])
+  const defaultExample = examples[0]
 
   useEffect(() => {
     const nextAutoMessage = examples[0]?.payload ?? '{}'
@@ -311,19 +302,6 @@ const ExecuteContract = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="funds">Funds (Optional)</Label>
-              <Input
-                id="funds"
-                placeholder="1000000 (in axpla)"
-                {...form.register('funds')}
-                disabled={isLoading}
-              />
-              <p className="text-xs text-muted-foreground">
-                Amount in axpla (1 XPLA = 1,000,000 axpla)
-              </p>
-            </div>
-
-            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="execute-message">Execute Message (JSON)</Label>
                 <Button
@@ -358,12 +336,87 @@ const ExecuteContract = () => {
                 Keep only the payload body. Wallet signing and base64 encoding
                 are handled for you.
               </p>
+              {defaultExample ? (
+                <p className="text-sm text-muted-foreground">
+                  The first live example, {defaultExample.name.toLowerCase()},
+                  is already loaded.
+                </p>
+              ) : null}
               {form.formState.errors.executeMessage && (
                 <p className="text-sm text-destructive">
                   {form.formState.errors.executeMessage.message}
                 </p>
               )}
             </div>
+
+            <details className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-background">
+              <summary className="cursor-pointer list-none px-4 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium text-foreground">
+                    Optional funds
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Send axpla with this execute message
+                  </p>
+                </div>
+              </summary>
+              <div className="space-y-2 border-t border-border p-4">
+                <Label htmlFor="funds">Funds (Optional)</Label>
+                <Input
+                  id="funds"
+                  placeholder="1000000 (in axpla)"
+                  {...form.register('funds')}
+                  disabled={isLoading}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Amount in axpla (1 XPLA = 1,000,000 axpla)
+                </p>
+              </div>
+            </details>
+
+            {examples.length ? (
+              <details className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-background">
+                <summary className="cursor-pointer list-none px-4 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">
+                      Change prefilled example
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {examples.length} live examples
+                    </p>
+                  </div>
+                </summary>
+                <div className="grid grid-cols-1 gap-3 border-t border-border p-4 md:grid-cols-2">
+                  {examples.map((example) => (
+                    <Button
+                      key={example.name}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => loadExample(example.payload)}
+                      className="h-auto justify-start rounded-[calc(var(--radius)-0.2rem)] p-3 text-left"
+                      disabled={isLoading}
+                    >
+                      <div>
+                        <div className="text-sm font-medium">
+                          {example.name}
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground">
+                          {example.description}
+                        </div>
+                        <div className="mt-1 truncate font-mono text-xs text-muted-foreground">
+                          {example.payload}
+                        </div>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </details>
+            ) : (
+              <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
+                No standard execute examples were inferred for this contract.
+                Use the raw JSON message field directly.
+              </div>
+            )}
 
             <Button
               type="submit"
@@ -383,46 +436,6 @@ const ExecuteContract = () => {
               )}
             </Button>
           </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Examples</CardTitle>
-          <CardDescription>
-            Live examples generated from the selected contract profile
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {examples.length ? (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {examples.map((example) => (
-                <Button
-                  key={example.name}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => loadExample(example.payload)}
-                  className="h-auto justify-start rounded-[calc(var(--radius)-0.2rem)] p-3 text-left"
-                  disabled={isLoading}
-                >
-                  <div>
-                    <div className="text-sm font-medium">{example.name}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      {example.description}
-                    </div>
-                    <div className="mt-1 truncate font-mono text-xs text-muted-foreground">
-                      {example.payload}
-                    </div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
-              No standard execute examples were inferred for this contract. Use
-              the raw JSON message field directly.
-            </div>
-          )}
         </CardContent>
       </Card>
 

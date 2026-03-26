@@ -47,7 +47,6 @@ export function BlockInfo() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
 
-  // 최신 블록 정보 가져오기
   const fetchLatestBlock = useCallback(async () => {
     try {
       setIsLoading(true)
@@ -67,7 +66,6 @@ export function BlockInfo() {
     }
   }, [lcd, toast])
 
-  // 특정 높이의 블록 검색
   const searchBlock = async () => {
     if (!searchHeight.trim()) {
       toast({
@@ -101,7 +99,6 @@ export function BlockInfo() {
     }
   }
 
-  // 컴포넌트 마운트 시 최신 블록 가져오기
   useEffect(() => {
     void fetchLatestBlock()
     const interval = setInterval(() => {
@@ -125,86 +122,6 @@ export function BlockInfo() {
 
   return (
     <div className="space-y-6">
-      {/* 최신 블록 정보 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Hash className="size-5" />
-            Latest Block
-          </CardTitle>
-          <CardDescription>
-            Current latest block information from the XPLA blockchain.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="size-6 animate-spin" />
-            </div>
-          ) : latestBlock ? (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
-                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Height
-                  </Label>
-                  <p className="text-2xl font-bold">
-                    {latestBlock.block.header.height}
-                  </p>
-                </div>
-                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
-                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Time
-                  </Label>
-                  <p className="text-sm">
-                    {formatTime(latestBlock.block.header.time)}
-                  </p>
-                </div>
-                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
-                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Transactions
-                  </Label>
-                  <p className="text-lg font-semibold">
-                    {latestBlock.block.header.num_txs}
-                  </p>
-                </div>
-                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
-                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    Proposer
-                  </Label>
-                  <p className="font-mono text-sm">
-                    {shortenAddress(latestBlock.block.header.proposer_address)}
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Block Hash
-                </Label>
-                <div className="flex items-center gap-2">
-                  <p className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background px-3 py-2 font-mono text-sm">
-                    {shortenAddress(latestBlock.block_id.hash)}
-                  </p>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openExplorer(latestBlock.block_id.hash)}
-                  >
-                    View
-                    <ArrowUpRight className="size-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <p className="text-muted-foreground">
-              No block information available.
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* 블록 검색 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -212,8 +129,8 @@ export function BlockInfo() {
             Search Block
           </CardTitle>
           <CardDescription>
-            Search for a specific block by height and compare it to the latest
-            observed chain state above.
+            Search for a specific block by height. The result shows the key
+            fields first and tucks the raw identifiers underneath.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -248,10 +165,10 @@ export function BlockInfo() {
 
           {searchedBlock && (
             <div className="mt-4 space-y-4 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
-              <h4 className="font-semibold">
+              <h4 className="font-semibold text-foreground">
                 Block {searchedBlock.block.header.height}
               </h4>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <div className="space-y-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
                   <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Time
@@ -273,9 +190,7 @@ export function BlockInfo() {
                     Proposer
                   </Label>
                   <p className="font-mono text-sm">
-                    {shortenAddress(
-                      searchedBlock.block.header.proposer_address,
-                    )}
+                    {shortenAddress(searchedBlock.block.header.proposer_address)}
                   </p>
                 </div>
                 <div className="space-y-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
@@ -297,7 +212,169 @@ export function BlockInfo() {
                   </div>
                 </div>
               </div>
+
+              <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+                <summary className="cursor-pointer list-none px-4 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">
+                      View block details
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Chain ID, full hashes, and block parts
+                    </p>
+                  </div>
+                </summary>
+                <div className="grid gap-3 border-t border-border p-4 md:grid-cols-2">
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Chain ID
+                    </Label>
+                    <p className="mt-2 break-all font-mono text-sm text-foreground">
+                      {searchedBlock.block.header.chain_id}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Proposer Address
+                    </Label>
+                    <p className="mt-2 break-all font-mono text-sm text-foreground">
+                      {searchedBlock.block.header.proposer_address}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Block Hash
+                    </Label>
+                    <p className="mt-2 break-all font-mono text-sm text-foreground">
+                      {searchedBlock.block_id.hash}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Parts Hash
+                    </Label>
+                    <p className="mt-2 break-all font-mono text-sm text-foreground">
+                      {searchedBlock.block_id.parts.hash}
+                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Total parts: {searchedBlock.block_id.parts.total}
+                    </p>
+                  </div>
+                </div>
+              </details>
             </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Hash className="size-5" />
+            Latest Block
+          </CardTitle>
+          <CardDescription>
+            Current chain head reduced to a compact summary. Open details only
+            if you need raw identifiers.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="size-6 animate-spin" />
+            </div>
+          ) : latestBlock ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Height
+                  </Label>
+                  <p className="text-2xl font-bold">
+                    {latestBlock.block.header.height}
+                  </p>
+                </div>
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Time
+                  </Label>
+                  <p className="text-sm">
+                    {formatTime(latestBlock.block.header.time)}
+                  </p>
+                </div>
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Transactions
+                  </Label>
+                  <p className="text-lg font-semibold">
+                    {latestBlock.block.header.num_txs}
+                  </p>
+                </div>
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Hash
+                  </Label>
+                  <p className="font-mono text-sm">
+                    {shortenAddress(latestBlock.block_id.hash)}
+                  </p>
+                </div>
+              </div>
+
+              <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+                <summary className="cursor-pointer list-none px-4 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">
+                      View latest block details
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Full hash, proposer, and explorer link
+                    </p>
+                  </div>
+                </summary>
+                <div className="space-y-4 border-t border-border p-4">
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                      <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        Proposer
+                      </Label>
+                      <p className="mt-2 break-all font-mono text-sm text-foreground">
+                        {latestBlock.block.header.proposer_address}
+                      </p>
+                    </div>
+                    <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                      <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        Chain ID
+                      </Label>
+                      <p className="mt-2 break-all font-mono text-sm text-foreground">
+                        {latestBlock.block.header.chain_id}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Full Block Hash
+                    </Label>
+                    <div className="flex items-center gap-2">
+                      <p className="flex-1 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 px-3 py-2 font-mono text-sm">
+                        {latestBlock.block_id.hash}
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openExplorer(latestBlock.block_id.hash)}
+                      >
+                        View
+                        <ArrowUpRight className="size-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          ) : (
+            <p className="text-muted-foreground">
+              No block information available.
+            </p>
           )}
         </CardContent>
       </Card>

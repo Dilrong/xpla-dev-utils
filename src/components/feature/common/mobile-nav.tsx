@@ -8,6 +8,19 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { menuConfig } from '@/lib/config/menu'
 import { usePathname, useRouter } from 'next/navigation'
+import { ChevronDown } from 'lucide-react'
+
+function isActivePath(pathname: string, href?: string) {
+  if (!href) {
+    return false
+  }
+
+  if (href === '/') {
+    return pathname === '/'
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
 
 const MobileNav = () => {
   const [open, setOpen] = React.useState(false)
@@ -73,28 +86,79 @@ const MobileNav = () => {
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="flex flex-col space-y-3">
-            {menuConfig.mainNav?.map((nav) => (
-              <MobileLink
-                key={nav.href}
-                href={`${nav.href}`}
-                onOpenChange={setOpen}
-                className={cn(
-                  'rounded-[calc(var(--radius)-0.2rem)] border px-4 py-3 transition-colors',
-                  pathname === nav.href
-                    ? 'border-primary/20 bg-primary/10 text-primary'
-                    : 'border-transparent hover:border-border hover:bg-card',
-                )}
-              >
-                <div className="space-y-1">
-                  <p className="font-medium">{nav.title}</p>
-                  {nav.description ? (
-                    <p className="text-sm text-muted-foreground">
-                      {nav.description}
-                    </p>
-                  ) : null}
-                </div>
-              </MobileLink>
-            ))}
+            <MobileLink
+              href={menuConfig.overview.href || '/'}
+              onOpenChange={setOpen}
+              className={cn(
+                'rounded-[calc(var(--radius)-0.2rem)] border px-4 py-3 transition-colors',
+                isActivePath(pathname, menuConfig.overview.href)
+                  ? 'border-primary/20 bg-primary/10 text-primary'
+                  : 'border-transparent hover:border-border hover:bg-card',
+              )}
+            >
+              <div className="space-y-1">
+                <p className="font-medium">{menuConfig.overview.title}</p>
+                {menuConfig.overview.description ? (
+                  <p className="text-sm text-muted-foreground">
+                    {menuConfig.overview.description}
+                  </p>
+                ) : null}
+              </div>
+            </MobileLink>
+            {menuConfig.groups.map((group) => {
+              const isGroupActive = group.items.some((item) =>
+                isActivePath(pathname, item.href),
+              )
+
+              return (
+                <details
+                  key={group.title}
+                  open={isGroupActive}
+                  className="group rounded-[calc(var(--radius)-0.2rem)] border border-border bg-card/80"
+                >
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-3 px-4 py-3">
+                    <div className="space-y-1">
+                      <p
+                        className={cn(
+                          'font-medium text-foreground',
+                          isGroupActive ? 'text-primary' : '',
+                        )}
+                      >
+                        {group.title}
+                      </p>
+                      <p className="text-sm leading-5 text-muted-foreground">
+                        {group.description}
+                      </p>
+                    </div>
+                    <ChevronDown className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+                  </summary>
+                  <div className="space-y-2 border-t border-border/70 p-3">
+                    {group.items.map((item) => (
+                      <MobileLink
+                        key={item.href}
+                        href={item.href || group.href}
+                        onOpenChange={setOpen}
+                        className={cn(
+                          'block rounded-[calc(var(--radius)-0.25rem)] border p-3 transition-colors',
+                          isActivePath(pathname, item.href)
+                            ? 'border-primary/20 bg-primary/10 text-primary'
+                            : 'border-transparent bg-background/60 hover:border-border hover:bg-background',
+                        )}
+                      >
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium">{item.title}</p>
+                          {item.description ? (
+                            <p className="text-xs leading-5 text-muted-foreground">
+                              {item.description}
+                            </p>
+                          ) : null}
+                        </div>
+                      </MobileLink>
+                    ))}
+                  </div>
+                </details>
+              )
+            })}
           </div>
         </ScrollArea>
       </SheetContent>

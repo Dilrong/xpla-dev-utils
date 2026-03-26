@@ -90,6 +90,14 @@ const SearchContract = () => {
     () => Boolean(address) && favoriteList.includes(address),
     [address, favoriteList],
   )
+  const profileSummary = useMemo(
+    () => (profile ? getContractProfileSummary(profile) : []),
+    [profile],
+  )
+  const keyProfileSummary = useMemo(
+    () => profileSummary.slice(1, 4),
+    [profileSummary],
+  )
 
   const loadContract = useCallback(
     async (nextAddress: string, options?: { silent?: boolean }) => {
@@ -285,7 +293,7 @@ const SearchContract = () => {
             <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
               <div className="space-y-2">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Live contract snapshot
+                  Selected contract
                 </p>
                 <h3 className="text-xl font-semibold text-foreground">
                   {snapshot.info.label}
@@ -303,6 +311,11 @@ const SearchContract = () => {
                 <p className="break-all font-mono text-sm text-muted-foreground">
                   {snapshot.address}
                 </p>
+                <p className="text-sm text-muted-foreground">
+                  {profile
+                    ? `${profile.queryExamples.length} query examples and ${profile.executeExamples.length} execute examples are ready.`
+                    : 'The address is ready for the query and execute tabs.'}
+                </p>
               </div>
               <Button
                 type="button"
@@ -317,29 +330,13 @@ const SearchContract = () => {
               </Button>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   Code ID
                 </p>
                 <p className="mt-2 text-lg font-semibold text-foreground">
                   {snapshot.info.codeId}
-                </p>
-              </div>
-              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Creator
-                </p>
-                <p className="mt-2 break-all font-mono text-sm text-foreground">
-                  {snapshot.info.creator || '-'}
-                </p>
-              </div>
-              <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Admin
-                </p>
-                <p className="mt-2 break-all font-mono text-sm text-foreground">
-                  {snapshot.info.admin || 'Immutable'}
                 </p>
               </div>
               <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
@@ -352,65 +349,140 @@ const SearchContract = () => {
               </div>
               <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Created Tx Index
+                  Admin
                 </p>
-                <p className="mt-2 text-lg font-semibold text-foreground">
-                  {snapshot.info.createdTxIndex}
+                <p className="mt-2 text-sm text-foreground">
+                  {snapshot.info.admin
+                    ? summarizeAddress(snapshot.info.admin, 10, 8)
+                    : 'Immutable'}
                 </p>
               </div>
               <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  IBC Port
+                  History
                 </p>
-                <p className="mt-2 break-all font-mono text-sm text-foreground">
-                  {snapshot.info.ibcPortId || '-'}
+                <p className="mt-2 text-sm text-foreground">
+                  {snapshot.history.length.toLocaleString()} entries
                 </p>
               </div>
             </div>
 
-            {profile ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Workflow className="size-4 text-primary" />
-                  <p className="text-sm font-medium text-foreground">
-                    Detected profile
-                  </p>
-                </div>
-                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {getContractProfileSummary(profile).map((item) => (
-                    <div
-                      key={item.label}
-                      className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4"
-                    >
-                      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                        {item.label}
-                      </p>
-                      <p className="mt-2 break-all text-sm text-foreground">
-                        {item.value}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+            {keyProfileSummary.length ? (
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {keyProfileSummary.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4"
+                  >
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      {item.label}
+                    </p>
+                    <p className="mt-2 break-all text-sm text-foreground">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
               </div>
             ) : null}
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Workflow className="size-4 text-primary" />
-                <p className="text-sm font-medium text-foreground">
-                  Contract history
-                </p>
-                <span className="text-sm text-muted-foreground">
-                  {snapshot.history.length.toLocaleString()} entries
-                </span>
-              </div>
+            <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+              <summary className="cursor-pointer list-none px-4 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Workflow className="size-4 text-primary" />
+                    <p className="text-sm font-medium text-foreground">
+                      View contract details
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Metadata and detected profile
+                  </p>
+                </div>
+              </summary>
+              <div className="space-y-4 border-t border-border p-4">
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Creator
+                    </p>
+                    <p className="mt-2 break-all font-mono text-sm text-foreground">
+                      {snapshot.info.creator || '-'}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Admin
+                    </p>
+                    <p className="mt-2 break-all font-mono text-sm text-foreground">
+                      {snapshot.info.admin || 'Immutable'}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Created Tx Index
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-foreground">
+                      {snapshot.info.createdTxIndex}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4 md:col-span-2 xl:col-span-1">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      IBC Port
+                    </p>
+                    <p className="mt-2 break-all font-mono text-sm text-foreground">
+                      {snapshot.info.ibcPortId || '-'}
+                    </p>
+                  </div>
+                </div>
 
-              {snapshot.history.length ? (
-                <div className="space-y-3">
-                  {snapshot.history.map((entry, index) => (
+                {profileSummary.length ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Workflow className="size-4 text-primary" />
+                      <p className="text-sm font-medium text-foreground">
+                        Detected profile
+                      </p>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                      {profileSummary.map((item) => (
+                        <div
+                          key={item.label}
+                          className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4"
+                        >
+                          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                            {item.label}
+                          </p>
+                          <p className="mt-2 break-all text-sm text-foreground">
+                            {item.value}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            </details>
+
+            <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+              <summary className="cursor-pointer list-none px-4 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Workflow className="size-4 text-primary" />
+                    <p className="text-sm font-medium text-foreground">
+                      View contract history
+                    </p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {snapshot.history.length.toLocaleString()} entries
+                  </span>
+                </div>
+              </summary>
+              <div className="space-y-3 border-t border-border p-4">
+                {snapshot.history.length ? (
+                  snapshot.history.map((entry, index) => (
                     <details
                       key={`${entry.operation}-${entry.updated?.block_height}-${index}`}
-                      className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4"
+                      className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4"
                     >
                       <summary className="cursor-pointer list-none">
                         <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
@@ -431,7 +503,7 @@ const SearchContract = () => {
                         </div>
                       </summary>
                       {formatHistoryMessage(entry.msg) ? (
-                        <pre className="mt-4 max-h-80 overflow-auto rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4 text-xs leading-6 text-muted-foreground">
+                        <pre className="mt-4 max-h-80 overflow-auto rounded-[calc(var(--radius)-0.2rem)] border border-border bg-background p-4 text-xs leading-6 text-muted-foreground">
                           {formatHistoryMessage(entry.msg)}
                         </pre>
                       ) : (
@@ -440,14 +512,14 @@ const SearchContract = () => {
                         </p>
                       )}
                     </details>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-[calc(var(--radius)-0.25rem)] border border-dashed border-border bg-background p-4 text-sm text-muted-foreground">
-                  The LCD did not return any contract history entries.
-                </div>
-              )}
-            </div>
+                  ))
+                ) : (
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-dashed border-border bg-secondary/35 p-4 text-sm text-muted-foreground">
+                    The LCD did not return any contract history entries.
+                  </div>
+                )}
+              </div>
+            </details>
           </div>
         ) : null}
       </CardContent>

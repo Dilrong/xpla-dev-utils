@@ -14,14 +14,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  ArrowUpRight,
-  Coins,
-  Loader2,
-  Search,
-  Shield,
-  TrendingUp,
-} from 'lucide-react'
+import { ArrowUpRight, Loader2, Search, Shield } from 'lucide-react'
 
 interface Validator {
   operator_address: string
@@ -78,7 +71,6 @@ export function ValidatorInfo() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
 
-  // 모든 검증자 정보 가져오기
   const fetchValidators = useCallback(async () => {
     try {
       setIsLoading(true)
@@ -98,7 +90,6 @@ export function ValidatorInfo() {
     }
   }, [lcd, toast])
 
-  // 검증자 세트 정보 가져오기
   const fetchValidatorSet = useCallback(async () => {
     try {
       const response = await axios.get(
@@ -110,7 +101,6 @@ export function ValidatorInfo() {
     }
   }, [lcd])
 
-  // 특정 검증자 검색
   const searchValidator = async () => {
     if (!searchAddress.trim()) {
       toast({
@@ -144,7 +134,6 @@ export function ValidatorInfo() {
     }
   }
 
-  // 컴포넌트 마운트 시 데이터 가져오기
   useEffect(() => {
     void fetchValidators()
     void fetchValidatorSet()
@@ -156,7 +145,7 @@ export function ValidatorInfo() {
   }, [fetchValidatorSet, fetchValidators])
 
   const formatTokens = (tokens: string) => {
-    const amount = parseInt(tokens) / 1000000 // 6 decimals
+    const amount = parseInt(tokens) / 1000000
     return `${amount.toLocaleString()} XPLA`
   }
 
@@ -203,7 +192,6 @@ export function ValidatorInfo() {
 
   return (
     <div className="space-y-6">
-      {/* 검증자 검색 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -246,16 +234,15 @@ export function ValidatorInfo() {
         </CardContent>
       </Card>
 
-      {/* 검색된 검증자 정보 */}
       {searchedValidator && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="size-5" />
-              Validator Details
+              Validator Summary
             </CardTitle>
             <CardDescription>
-              Detailed information about the searched validator.
+              Show the core staking fields first and keep the rest collapsed.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -309,35 +296,109 @@ export function ValidatorInfo() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() =>
-                      openExplorer(searchedValidator.operator_address)
-                    }
+                    onClick={() => openExplorer(searchedValidator.operator_address)}
                   >
                     <ArrowUpRight className="size-4" />
                   </Button>
                 </div>
               </div>
-              {searchedValidator.description.website && (
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
-                    Website
-                  </Label>
-                  <a
-                    href={searchedValidator.description.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline"
-                  >
-                    {searchedValidator.description.website}
-                  </a>
+
+              <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+                <summary className="cursor-pointer list-none px-4 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">
+                      View validator details
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Website, shares, security, and unbonding data
+                    </p>
+                  </div>
+                </summary>
+                <div className="grid gap-3 border-t border-border p-4 md:grid-cols-2">
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Delegator Shares
+                    </Label>
+                    <p className="mt-2 break-all text-sm text-foreground">
+                      {searchedValidator.delegator_shares}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Min Self Delegation
+                    </Label>
+                    <p className="mt-2 break-all text-sm text-foreground">
+                      {searchedValidator.min_self_delegation}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Jailed
+                    </Label>
+                    <p className="mt-2 text-sm text-foreground">
+                      {searchedValidator.jailed ? 'Yes' : 'No'}
+                    </p>
+                  </div>
+                  <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Unbonding Time
+                    </Label>
+                    <p className="mt-2 break-all text-sm text-foreground">
+                      {searchedValidator.unbonding_time || '-'}
+                    </p>
+                  </div>
+                  {searchedValidator.description.website ? (
+                    <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4 md:col-span-2">
+                      <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        Website
+                      </Label>
+                      <a
+                        href={searchedValidator.description.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 block break-all text-sm text-primary hover:underline"
+                      >
+                        {searchedValidator.description.website}
+                      </a>
+                    </div>
+                  ) : null}
+                  {searchedValidator.description.security_contact ? (
+                    <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                      <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        Security Contact
+                      </Label>
+                      <p className="mt-2 break-all text-sm text-foreground">
+                        {searchedValidator.description.security_contact}
+                      </p>
+                    </div>
+                  ) : null}
+                  {searchedValidator.description.identity ? (
+                    <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4">
+                      <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        Identity
+                      </Label>
+                      <p className="mt-2 break-all text-sm text-foreground">
+                        {searchedValidator.description.identity}
+                      </p>
+                    </div>
+                  ) : null}
+                  {searchedValidator.description.details ? (
+                    <div className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 p-4 md:col-span-2">
+                      <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        Notes
+                      </Label>
+                      <p className="mt-2 text-sm text-foreground">
+                        {searchedValidator.description.details}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
-              )}
+              </details>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* 검증자 세트 정보 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -345,7 +406,7 @@ export function ValidatorInfo() {
             Active Validators
           </CardTitle>
           <CardDescription>
-            Currently active validators in the network.
+            Network-wide validator counts first, with the loaded list collapsed.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -355,47 +416,78 @@ export function ValidatorInfo() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">
-                Total Active Validators: {validators.length}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Active validators
+                  </p>
+                  <p className="mt-2 text-xl font-semibold text-foreground">
+                    {validators.length}
+                  </p>
+                </div>
+                <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Validator set height
+                  </p>
+                  <p className="mt-2 text-xl font-semibold text-foreground">
+                    {validatorSet?.block_height || '-'}
+                  </p>
+                </div>
+                <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Consensus validators
+                  </p>
+                  <p className="mt-2 text-xl font-semibold text-foreground">
+                    {validatorSet?.validators.length || 0}
+                  </p>
+                </div>
               </div>
-              <div className="max-h-96 space-y-2 overflow-y-auto">
-                {validators.slice(0, 20).map((validator, index) => (
-                  <div
-                    key={validator.operator_address}
-                    className="flex items-center justify-between rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        #{index + 1}
-                      </span>
-                      <div>
-                        <p className="font-medium">
-                          {validator.description.moniker}
+
+              <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+                <summary className="cursor-pointer list-none px-4 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">
+                      Browse loaded validator list
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Showing first {Math.min(validators.length, 10)}
+                    </p>
+                  </div>
+                </summary>
+                <div className="max-h-96 space-y-2 overflow-y-auto border-t border-border p-4">
+                  {validators.slice(0, 10).map((validator, index) => (
+                    <div
+                      key={validator.operator_address}
+                      className="flex items-center justify-between rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-muted-foreground">
+                          #{index + 1}
+                        </span>
+                        <div>
+                          <p className="font-medium">
+                            {validator.description.moniker}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {shortenAddress(validator.operator_address)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          {formatTokens(validator.tokens)}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {shortenAddress(validator.operator_address)}
+                          {formatPercentage(
+                            validator.commission.commission_rates.rate,
+                          )}{' '}
+                          commission
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium">
-                        {formatTokens(validator.tokens)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatPercentage(
-                          validator.commission.commission_rates.rate,
-                        )}{' '}
-                        commission
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {validators.length > 20 && (
-                <p className="text-center text-sm text-muted-foreground">
-                  Showing first 20 validators. Total: {validators.length}
-                </p>
-              )}
+                  ))}
+                </div>
+              </details>
             </div>
           )}
         </CardContent>

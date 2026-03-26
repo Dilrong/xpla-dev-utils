@@ -10,7 +10,7 @@ const Page = () => {
       <PageHero
         eyebrow="Contract Workbench"
         title="Query and execute contracts"
-        description="Search a contract once, then inspect state or post execute messages against the selected address."
+        description="Search once, then use a prefilled query or execute payload. Extra metadata stays collapsed until you open it."
       />
       <div className="space-y-4">
         <SearchContract />

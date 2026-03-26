@@ -51,7 +51,6 @@ const QueryContract = () => {
       return
     }
 
-    // 주소 형식 검증
     if (!isValidXplaAddress(address)) {
       toast({
         title: 'Invalid contract address',
@@ -65,10 +64,9 @@ const QueryContract = () => {
       setIsLoading(true)
       setError('')
 
-      // JSON 메시지 유효성 검증
       try {
         JSON.parse(message)
-      } catch (parseError) {
+      } catch {
         setError('Invalid JSON format. Please check your query message.')
         toast({
           title: 'Invalid JSON',
@@ -97,27 +95,21 @@ const QueryContract = () => {
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response) {
-          // 서버 에러 응답
           const errorMessage =
             err.response.data?.message ||
             err.response.data?.error ||
             'Query failed'
-          setError(errorMessage)
 
           if (errorMessage.includes('decoding bech32 failed')) {
-            setError(
-              'Invalid contract address format. Please check the address.',
-            )
+            setError('Invalid contract address format. Please check the address.')
           } else if (errorMessage.includes('contract not found')) {
             setError('Contract not found. Please verify the contract address.')
           } else {
             setError(errorMessage)
           }
         } else if (err.request) {
-          // 네트워크 에러
           setError('Network error. Please check your connection.')
         } else {
-          // 기타 에러
           setError('An error occurred while querying the contract.')
         }
       } else {
@@ -146,7 +138,7 @@ const QueryContract = () => {
         description: 'Query result copied successfully.',
       })
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
+    } catch {
       toast({
         title: 'Copy failed',
         description: 'Failed to copy to clipboard.',
@@ -156,6 +148,7 @@ const QueryContract = () => {
   }
 
   const examples = useMemo(() => profile?.queryExamples ?? [], [profile])
+  const defaultExample = examples[0]
 
   useEffect(() => {
     const nextAutoMessage = examples[0]?.payload ?? '{}'
@@ -218,12 +211,27 @@ const QueryContract = () => {
             <p className="text-sm text-muted-foreground">
               Write the raw JSON query message exactly as the contract expects.
             </p>
+            {defaultExample ? (
+              <p className="text-sm text-muted-foreground">
+                The first live example, {defaultExample.name.toLowerCase()}, is
+                already loaded.
+              </p>
+            ) : null}
           </div>
 
-          <div className="space-y-2">
-            <Label>Quick Examples</Label>
-            {examples.length ? (
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+          {examples.length ? (
+            <details className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-background">
+              <summary className="cursor-pointer list-none px-4 py-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium text-foreground">
+                    Change prefilled example
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {examples.length} live examples
+                  </p>
+                </div>
+              </summary>
+              <div className="grid grid-cols-1 gap-2 border-t border-border p-4 md:grid-cols-2">
                 {examples.map((example) => (
                   <Button
                     key={example.name}
@@ -244,13 +252,13 @@ const QueryContract = () => {
                   </Button>
                 ))}
               </div>
-            ) : (
-              <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
-                No standard query examples were inferred for this contract. Use
-                the raw JSON message field directly.
-              </div>
-            )}
-          </div>
+            </details>
+          ) : (
+            <div className="rounded-[calc(var(--radius)-0.2rem)] border border-dashed border-border bg-background/60 p-4 text-sm text-muted-foreground">
+              No standard query examples were inferred for this contract. Use
+              the raw JSON message field directly.
+            </div>
+          )}
 
           <Button
             className="w-full"

@@ -2,7 +2,6 @@
 
 import { useCallback } from 'react'
 import axios from 'axios'
-import StatusBar from './status-bar'
 import { useConfigStore } from '@/lib/store/config-store'
 import StatusCard from '@/components/feature/main/status-card'
 import { formatWithCommas } from '@/lib/utils'
@@ -39,29 +38,15 @@ export default function RpcStatusWrapper({ title, url }: Props) {
   return (
     <StatusCard
       title={title}
-      content={
-        <section className="space-y-3">
-          <div className="flex items-center justify-between gap-4">
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-              Public RPC
-            </p>
-            <p className="truncate text-xs text-muted-foreground">{url}</p>
-          </div>
-          <StatusBar history={history} />
-        </section>
+      serviceLabel="Public RPC"
+      summary={
+        metric !== null
+          ? `${formatWithCommas(metric)} blocks`
+          : 'Waiting for data'
       }
-      footer={
-        <div className="flex w-full items-center justify-between gap-4">
-          <p className="text-sm font-medium text-foreground">
-            {metric !== null
-              ? `${formatWithCommas(metric)} blocks`
-              : 'Waiting for data'}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : '-'}
-          </p>
-        </div>
-      }
+      url={url}
+      history={history}
+      lastUpdated={lastUpdated}
     />
   )
 }

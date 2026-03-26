@@ -54,7 +54,6 @@ export function TransactionInfo() {
   const [transaction, setTransaction] = useState<Transaction | null>(null)
   const [isSearching, setIsSearching] = useState(false)
 
-  // 트랜잭션 검색
   const searchTransaction = async () => {
     if (!txHash.trim()) {
       toast({
@@ -90,11 +89,6 @@ export function TransactionInfo() {
     return new Date(timeString).toLocaleString()
   }
 
-  const shortenAddress = (address: string) => {
-    if (!address) return 'N/A'
-    return `${address.slice(0, 8)}...${address.slice(-6)}`
-  }
-
   const shortenHash = (hash: string) => {
     if (!hash) return 'N/A'
     return `${hash.slice(0, 8)}...${hash.slice(-6)}`
@@ -115,7 +109,6 @@ export function TransactionInfo() {
 
   return (
     <div className="space-y-6">
-      {/* 트랜잭션 검색 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -123,8 +116,8 @@ export function TransactionInfo() {
             Search Transaction
           </CardTitle>
           <CardDescription>
-            Look up a transaction hash and inspect status, messages, logs, and
-            explorer links in one place.
+            Look up a transaction hash and keep the raw messages and logs out of
+            the way until you need them.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -158,22 +151,20 @@ export function TransactionInfo() {
         </CardContent>
       </Card>
 
-      {/* 트랜잭션 정보 */}
       {transaction && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Hash className="size-5" />
-              Transaction Details
+              Transaction Summary
             </CardTitle>
             <CardDescription>
-              Detailed information about the searched transaction.
+              Status first, raw payloads and logs only when you expand them.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {/* 기본 정보 */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
                 <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
                   <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Status
@@ -224,9 +215,16 @@ export function TransactionInfo() {
                     {formatTime(transaction.tx_response.timestamp)}
                   </p>
                 </div>
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    Messages
+                  </Label>
+                  <p className="text-lg font-semibold">
+                    {transaction.tx_response.tx.body.messages.length}
+                  </p>
+                </div>
               </div>
 
-              {/* 트랜잭션 해시 */}
               <div className="space-y-2">
                 <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   Transaction Hash
@@ -245,12 +243,18 @@ export function TransactionInfo() {
                 </div>
               </div>
 
-              {/* 메시지 정보 */}
-              <div className="space-y-2">
-                <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Messages
-                </Label>
-                <div className="space-y-2">
+              <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+                <summary className="cursor-pointer list-none px-4 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">
+                      View messages
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {transaction.tx_response.tx.body.messages.length} payloads
+                    </p>
+                  </div>
+                </summary>
+                <div className="space-y-2 border-t border-border p-4">
                   {transaction.tx_response.tx.body.messages.map(
                     (message, index) => (
                       <div
@@ -272,16 +276,22 @@ export function TransactionInfo() {
                     ),
                   )}
                 </div>
-              </div>
+              </details>
 
-              {/* 로그 정보 */}
               {transaction.tx_response.logs &&
                 transaction.tx_response.logs.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                      Logs
-                    </Label>
-                    <div className="space-y-2">
+                  <details className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background">
+                    <summary className="cursor-pointer list-none px-4 py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium text-foreground">
+                          View execution logs
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {transaction.tx_response.logs.length} log groups
+                        </p>
+                      </div>
+                    </summary>
+                    <div className="space-y-2 border-t border-border p-4">
                       {transaction.tx_response.logs.map((log, index) => (
                         <div
                           key={index}
@@ -295,12 +305,12 @@ export function TransactionInfo() {
                               {log.msg_index}
                             </span>
                           </div>
-                          {log.log && (
+                          {log.log ? (
                             <p className="mb-2 text-xs text-muted-foreground">
                               {log.log}
                             </p>
-                          )}
-                          {log.events && log.events.length > 0 && (
+                          ) : null}
+                          {log.events && log.events.length > 0 ? (
                             <div className="space-y-1">
                               {log.events.map((event, eventIndex) => (
                                 <div key={eventIndex} className="text-xs">
@@ -318,14 +328,13 @@ export function TransactionInfo() {
                                 </div>
                               ))}
                             </div>
-                          )}
+                          ) : null}
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </details>
                 )}
 
-              {/* 에러 정보 */}
               {transaction.tx_response.code !== 0 &&
                 transaction.tx_response.raw_log && (
                   <div className="space-y-2">

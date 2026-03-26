@@ -6,3 +6,8 @@ export interface NavItem {
 }
 
 export interface MainNavItem extends NavItem {}
+
+export interface NavGroup extends NavItem {
+  href: string
+  items: MainNavItem[]
+}
