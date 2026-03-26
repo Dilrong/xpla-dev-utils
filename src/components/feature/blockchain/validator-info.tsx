@@ -211,7 +211,8 @@ export function ValidatorInfo() {
             Search Validator
           </CardTitle>
           <CardDescription>
-            Search for a specific validator by address.
+            Search for a validator operator address and inspect the most useful
+            staking fields first.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -230,9 +231,15 @@ export function ValidatorInfo() {
             </div>
             <Button onClick={searchValidator} disabled={isSearching}>
               {isSearching ? (
-                <Loader2 className="size-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Searching
+                </>
               ) : (
-                <Search className="size-4" />
+                <>
+                  <Search className="mr-2 size-4" />
+                  Search
+                </>
               )}
             </Button>
           </div>
@@ -254,16 +261,16 @@ export function ValidatorInfo() {
           <CardContent>
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Moniker
                   </Label>
                   <p className="text-lg font-semibold">
                     {searchedValidator.description.moniker}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Status
                   </Label>
                   <span
@@ -272,16 +279,16 @@ export function ValidatorInfo() {
                     {getStatusText(searchedValidator.status)}
                   </span>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Tokens
                   </Label>
                   <p className="text-lg font-semibold">
                     {formatTokens(searchedValidator.tokens)}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Commission Rate
                   </Label>
                   <p className="text-sm">
@@ -292,11 +299,11 @@ export function ValidatorInfo() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground">
+                <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   Operator Address
                 </Label>
                 <div className="flex items-center gap-2">
-                  <p className="flex-1 rounded bg-muted px-2 py-1 font-mono text-sm">
+                  <p className="flex-1 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background px-3 py-2 font-mono text-sm">
                     {shortenAddress(searchedValidator.operator_address)}
                   </p>
                   <Button
@@ -319,7 +326,7 @@ export function ValidatorInfo() {
                     href={searchedValidator.description.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+                    className="text-primary hover:underline"
                   >
                     {searchedValidator.description.website}
                   </a>
@@ -355,7 +362,7 @@ export function ValidatorInfo() {
                 {validators.slice(0, 20).map((validator, index) => (
                   <div
                     key={validator.operator_address}
-                    className="flex items-center justify-between rounded-lg bg-muted p-3"
+                    className="flex items-center justify-between rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-3"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-medium text-muted-foreground">

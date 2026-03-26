@@ -144,32 +144,32 @@ export function BlockInfo() {
           ) : latestBlock ? (
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Height
                   </Label>
                   <p className="text-2xl font-bold">
                     {latestBlock.block.header.height}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Time
                   </Label>
                   <p className="text-sm">
                     {formatTime(latestBlock.block.header.time)}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Transactions
                   </Label>
                   <p className="text-lg font-semibold">
                     {latestBlock.block.header.num_txs}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Proposer
                   </Label>
                   <p className="font-mono text-sm">
@@ -178,11 +178,11 @@ export function BlockInfo() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground">
+                <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   Block Hash
                 </Label>
                 <div className="flex items-center gap-2">
-                  <p className="rounded bg-muted px-2 py-1 font-mono text-sm">
+                  <p className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background px-3 py-2 font-mono text-sm">
                     {shortenAddress(latestBlock.block_id.hash)}
                   </p>
                   <Button
@@ -190,6 +190,7 @@ export function BlockInfo() {
                     size="sm"
                     onClick={() => openExplorer(latestBlock.block_id.hash)}
                   >
+                    View
                     <ArrowUpRight className="size-4" />
                   </Button>
                 </div>
@@ -211,7 +212,8 @@ export function BlockInfo() {
             Search Block
           </CardTitle>
           <CardDescription>
-            Search for a specific block by height.
+            Search for a specific block by height and compare it to the latest
+            observed chain state above.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -231,37 +233,43 @@ export function BlockInfo() {
             </div>
             <Button onClick={searchBlock} disabled={isSearching}>
               {isSearching ? (
-                <Loader2 className="size-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Searching
+                </>
               ) : (
-                <Search className="size-4" />
+                <>
+                  <Search className="mr-2 size-4" />
+                  Search
+                </>
               )}
             </Button>
           </div>
 
           {searchedBlock && (
-            <div className="mt-4 space-y-4 rounded-lg bg-muted p-4">
+            <div className="mt-4 space-y-4 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
               <h4 className="font-semibold">
                 Block {searchedBlock.block.header.height}
               </h4>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Time
                   </Label>
                   <p className="text-sm">
                     {formatTime(searchedBlock.block.header.time)}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Transactions
                   </Label>
                   <p className="text-lg font-semibold">
                     {searchedBlock.block.header.num_txs}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Proposer
                   </Label>
                   <p className="font-mono text-sm">
@@ -270,12 +278,12 @@ export function BlockInfo() {
                     )}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Block Hash
                   </Label>
                   <div className="flex items-center gap-2">
-                    <p className="rounded bg-background px-2 py-1 font-mono text-sm">
+                    <p className="rounded-[calc(var(--radius)-0.25rem)] border border-border bg-secondary/35 px-3 py-2 font-mono text-sm">
                       {shortenAddress(searchedBlock.block_id.hash)}
                     </p>
                     <Button
@@ -283,6 +291,7 @@ export function BlockInfo() {
                       size="sm"
                       onClick={() => openExplorer(searchedBlock.block_id.hash)}
                     >
+                      View
                       <ArrowUpRight className="size-4" />
                     </Button>
                   </div>

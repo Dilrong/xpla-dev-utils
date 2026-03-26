@@ -37,15 +37,22 @@ export default function LcdStatusWrapper({ title, url }: Props) {
     <StatusCard
       title={title}
       content={
-        <section>
-          <p className="mb-2 text-sm text-muted-foreground">Public endpoint</p>
+        <section className="space-y-3">
+          <div className="flex items-center justify-between gap-4">
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Public LCD
+            </p>
+            <p className="truncate text-xs text-muted-foreground">{url}</p>
+          </div>
           <StatusBar history={history} />
         </section>
       }
       footer={
-        <div className="flex w-full justify-between">
-          <p className="text-sm text-muted-foreground">
-            {metric !== null ? `${formatWithCommas(metric)} blocks` : 'Waiting for data'}
+        <div className="flex w-full items-center justify-between gap-4">
+          <p className="text-sm font-medium text-foreground">
+            {metric !== null
+              ? `${formatWithCommas(metric)} blocks`
+              : 'Waiting for data'}
           </p>
           <p className="text-sm text-muted-foreground">
             {lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : '-'}

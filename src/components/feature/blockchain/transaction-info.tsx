@@ -123,7 +123,8 @@ export function TransactionInfo() {
             Search Transaction
           </CardTitle>
           <CardDescription>
-            Search for a specific transaction by hash.
+            Look up a transaction hash and inspect status, messages, logs, and
+            explorer links in one place.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -142,9 +143,15 @@ export function TransactionInfo() {
             </div>
             <Button onClick={searchTransaction} disabled={isSearching}>
               {isSearching ? (
-                <Loader2 className="size-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  Searching
+                </>
               ) : (
-                <Search className="size-4" />
+                <>
+                  <Search className="mr-2 size-4" />
+                  Search
+                </>
               )}
             </Button>
           </div>
@@ -167,8 +174,8 @@ export function TransactionInfo() {
             <div className="space-y-6">
               {/* 기본 정보 */}
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Status
                   </Label>
                   <div className="flex items-center gap-2">
@@ -192,16 +199,16 @@ export function TransactionInfo() {
                     </span>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Height
                   </Label>
                   <p className="text-lg font-semibold">
                     {transaction.tx_response.height}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Gas Used
                   </Label>
                   <p className="text-sm">
@@ -209,8 +216,8 @@ export function TransactionInfo() {
                     {formatGas(transaction.tx_response.gas_wanted)}
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-muted-foreground">
+                <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
+                  <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                     Timestamp
                   </Label>
                   <p className="text-sm">
@@ -221,11 +228,11 @@ export function TransactionInfo() {
 
               {/* 트랜잭션 해시 */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground">
+                <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   Transaction Hash
                 </Label>
                 <div className="flex items-center gap-2">
-                  <p className="flex-1 rounded bg-muted px-2 py-1 font-mono text-sm">
+                  <p className="flex-1 rounded-[calc(var(--radius)-0.25rem)] border border-border bg-background px-3 py-2 font-mono text-sm">
                     {shortenHash(transaction.tx_response.txhash)}
                   </p>
                   <Button
@@ -240,13 +247,16 @@ export function TransactionInfo() {
 
               {/* 메시지 정보 */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground">
+                <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                   Messages
                 </Label>
                 <div className="space-y-2">
                   {transaction.tx_response.tx.body.messages.map(
                     (message, index) => (
-                      <div key={index} className="rounded-lg bg-muted p-3">
+                      <div
+                        key={index}
+                        className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-3"
+                      >
                         <div className="mb-2 flex items-center gap-2">
                           <span className="text-xs font-medium text-muted-foreground">
                             Message {index + 1}
@@ -255,7 +265,7 @@ export function TransactionInfo() {
                             {getMessageType(message['@type'])}
                           </span>
                         </div>
-                        <pre className="overflow-x-auto text-xs">
+                        <pre className="overflow-x-auto text-xs leading-6">
                           {JSON.stringify(message, null, 2)}
                         </pre>
                       </div>
@@ -268,12 +278,15 @@ export function TransactionInfo() {
               {transaction.tx_response.logs &&
                 transaction.tx_response.logs.length > 0 && (
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium text-muted-foreground">
+                    <Label className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
                       Logs
                     </Label>
                     <div className="space-y-2">
                       {transaction.tx_response.logs.map((log, index) => (
-                        <div key={index} className="rounded-lg bg-muted p-3">
+                        <div
+                          key={index}
+                          className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-3"
+                        >
                           <div className="mb-2 flex items-center gap-2">
                             <span className="text-xs font-medium text-muted-foreground">
                               Log {index + 1}

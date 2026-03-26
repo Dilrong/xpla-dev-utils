@@ -13,18 +13,18 @@ const Page = () => {
         description="Inspect live blocks, search transaction receipts, and review validator records without leaving the app."
       />
       <Tabs defaultValue="blocks" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid h-auto w-full grid-cols-1 gap-2 rounded-xl border border-border bg-card p-2 md:grid-cols-3">
           <TabsTrigger value="blocks">Blocks</TabsTrigger>
           <TabsTrigger value="transactions">Transactions</TabsTrigger>
           <TabsTrigger value="validators">Validators</TabsTrigger>
         </TabsList>
-        <TabsContent value="blocks">
+        <TabsContent value="blocks" className="mt-5">
           <BlockInfo />
         </TabsContent>
-        <TabsContent value="transactions">
+        <TabsContent value="transactions" className="mt-5">
           <TransactionInfo />
         </TabsContent>
-        <TabsContent value="validators">
+        <TabsContent value="validators" className="mt-5">
           <ValidatorInfo />
         </TabsContent>
       </Tabs>
