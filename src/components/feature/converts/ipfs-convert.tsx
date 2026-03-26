@@ -56,7 +56,7 @@ const IpfsConvert = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid w-full items-center gap-1.5">
+        <div className="grid w-full items-center gap-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
           <Label htmlFor="ipfs">IPFS Hash or URL</Label>
           <Input
             type="string"
@@ -68,21 +68,21 @@ const IpfsConvert = () => {
         </div>
 
         {isLoading && (
-          <div className="rounded-lg bg-muted p-4">
+          <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
             <p className="text-sm text-muted-foreground">Converting...</p>
           </div>
         )}
 
         {http && (
           <div className="space-y-4">
-            <div className="rounded-lg bg-muted p-4">
+            <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
               <p className="text-sm">
                 <span className="font-semibold">HTTP URL:</span>
               </p>
               <p className="break-all font-mono text-sm">{http}</p>
             </div>
 
-            <div className="rounded-lg border p-4">
+            <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-background p-4">
               <Image
                 src={http}
                 alt="IPFS Content"

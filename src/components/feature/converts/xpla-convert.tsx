@@ -59,7 +59,7 @@ const XplaConvert = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid w-full items-center gap-1.5">
+        <div className="grid w-full items-center gap-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
           <Label htmlFor="axpla">aXPLA</Label>
           <Input
             type="number"
@@ -70,7 +70,7 @@ const XplaConvert = () => {
             inputMode="numeric"
           />
         </div>
-        <div className="grid w-full items-center gap-1.5">
+        <div className="grid w-full items-center gap-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
           <Label htmlFor="xpla">XPLA</Label>
           <Input
             type="number"

@@ -51,14 +51,14 @@ const EpochConvert = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="rounded-lg bg-muted p-4">
+        <div className="rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
           <p className="text-sm">
             Current Unix epoch time:{' '}
             <span className="font-mono font-bold">{current}</span>
           </p>
         </div>
 
-        <div className="grid w-full items-center gap-1.5">
+        <div className="grid w-full items-center gap-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
           <Label htmlFor="epoch">Epoch Timestamp</Label>
           <Input
             type="number"
@@ -70,7 +70,7 @@ const EpochConvert = () => {
         </div>
 
         {gmt && tz && (
-          <div className="space-y-2 rounded-lg bg-muted p-4">
+          <div className="space-y-2 rounded-[calc(var(--radius)-0.2rem)] border border-border bg-secondary/35 p-4">
             <p className="text-sm">
               <span className="font-semibold">GMT:</span>{' '}
               <span className="font-mono">{gmt}</span>
